@@ -22,6 +22,7 @@ namespace Authenticator
             }
             else if (foundedUser.Password == pass)
             {
+                Console.WriteLine("You`ve just logged in!\n Hello, "+ foundedUser.Name);
                 return foundedUser;
             }
 

@@ -21,7 +21,7 @@ namespace Authenticator
         
         public string GetFullInfo()
         {
-            return "User data: login- "+ (String.IsNullOrEmpty(Name) ? Email : Name) +", password- "+Password;
+            return "User data: login - "+ (String.IsNullOrEmpty(Name) ? Email : Name) +", password - "+Password;
         }
 
         public void DisplayFullInfo()
