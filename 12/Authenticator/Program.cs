@@ -36,9 +36,7 @@ namespace Authenticator
                     {
                         break;
                     }
-                    Console.WriteLine(name.Contains('@'));
                     string authenticationType = name.Contains('@') ? "email" : "name";
-                    Console.WriteLine(authenticationType);
                     IAuthenticator authenticator = (new AuthenticationSelector()).GetAutenticator(authenticationType);
                     IUser user = authenticator.AuthenticateUser(name, password);
                     user.DisplayFullInfo();

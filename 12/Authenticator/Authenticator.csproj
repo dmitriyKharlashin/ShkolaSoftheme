@@ -42,10 +42,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractValidator.cs" />
+    <Compile Include="AuthenticationSelector.cs" />
+    <Compile Include="EmailAuthenticator.cs" />
+    <Compile Include="EmailValidator.cs" />
     <Compile Include="IAuthenticator.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="IDataInfo.cs" />
     <Compile Include="IUser.cs" />
+    <Compile Include="NameAuthenticator.cs" />
+    <Compile Include="NameValidator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

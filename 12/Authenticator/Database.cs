@@ -45,12 +45,26 @@ namespace Authenticator
 
         public IUser FindByEmail(string email)
         {
-            return _users.FirstOrDefault(p => p.Email == email);
+            for (var i = 0; i < Length(); i++)
+            {
+                if (_users[i].Email == email)
+                {
+                    return _users[i];
+                }
+            }
+            return null;
         }
 
         public IUser FindByName(string name)
         {
-            return _users.FirstOrDefault(p => p.Name == name);
+            for (var i = 0; i < Length(); i++)
+            {
+                if (_users[i].Name == name)
+                {
+                    return _users[i];
+                }
+            }
+            return null;
         }
 
         public void Add(IUser user)
@@ -84,9 +98,12 @@ namespace Authenticator
 
         public void DisplayFullInfo()
         {
-            foreach (User user in _users)
+            foreach (IUser user in _users)
             {
-                user.DisplayFullInfo();
+                if(user != null)
+                {
+                    user.DisplayFullInfo();
+                }
             }
         }
     }
