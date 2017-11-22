@@ -51,7 +51,7 @@ namespace Authenticator
 
             Database database = Database.GetInstance();
             database.DisplayFullInfo();
-            Console.Write("Press any key to exit");
+            Console.Write("Press any key to exit...");
             Console.ReadKey();
         }
     }

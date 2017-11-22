@@ -17,7 +17,7 @@ namespace Authenticator
             IUser foundedUser = database.FindByName(name);
             if (foundedUser == null)
             {
-                user = new User("", name, pass);
+                user = new User(name, "", pass);
                 database.Add(user);
             }
             else if (foundedUser.Password == pass)

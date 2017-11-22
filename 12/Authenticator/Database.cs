@@ -47,7 +47,7 @@ namespace Authenticator
         {
             for (var i = 0; i < Length(); i++)
             {
-                if (_users[i].Email == email)
+                if (_users[i] != null &&_users[i].Email == email)
                 {
                     return _users[i];
                 }
@@ -59,7 +59,7 @@ namespace Authenticator
         {
             for (var i = 0; i < Length(); i++)
             {
-                if (_users[i].Name == name)
+                if (_users[i] != null && _users[i].Name == name)
                 {
                     return _users[i];
                 }
