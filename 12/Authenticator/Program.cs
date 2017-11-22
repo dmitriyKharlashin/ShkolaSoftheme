@@ -50,6 +50,7 @@ namespace Authenticator
             while (true);
 
             Database database = Database.GetInstance();
+            Console.WriteLine("List of added users:");
             database.DisplayFullInfo();
             Console.Write("Press any key to exit...");
             Console.ReadKey();

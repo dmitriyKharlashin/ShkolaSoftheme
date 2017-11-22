@@ -71,6 +71,7 @@ namespace Authenticator
        {
             EnlargeIfFull();
             _users[Length()] = user;
+            Console.WriteLine("New user was added!");
        }
         protected int GetLastNotEmptyIndex()
         {
