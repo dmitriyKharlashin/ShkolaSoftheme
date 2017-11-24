@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{786927DC-D657-4F0D-B033-2BECC5AD86EB}</ProjectGuid>
+    <ProjectGuid>{2AD847F8-A618-4D25-8ACA-6E42F8AD0C6C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DoublyLinkedList</RootNamespace>
     <AssemblyName>DoublyLinkedList</AssemblyName>
@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoublyLinkedList.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -8,13 +8,13 @@ namespace DoublyLinkedList
 {
     class Node<T>
     {
-        public Node<T> Previous = null;
-        public Node<T> Next = null;
-        public T Data;
+        public Node<T> previous = null;
+        public Node<T> next = null;
+        public T Data { get; private set;}
 
-        public Node(T data)
+        public Node(T element)
         {
-            T Data = data;
+            Data = element;
         }
     }
 }

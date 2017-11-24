@@ -8,68 +8,101 @@ namespace DoublyLinkedList
 {
     class DoublyLinkedList<T>
     {
-        int Length = 0;
-        Node<T> Head = null;
-        Node<T> Tail = null;
+        private int _length = 0;
+        Node<T> head = null;
+        Node<T> tail = null;
+
+        public DoublyLinkedList(){
+            Console.WriteLine("New doubly linked list was created");
+        }
 
         public void Add(T element)
         {
             Node<T> node = new Node<T>(element);
-            if (Head == null)
+            if (head == null)
             {
-                Head = node;
-                Tail = node;
+                head = node;
+                tail = node;
             } else
             {
-                Node<T> currentNode = Head;
+                Node<T> currentNode = head;
 
-                while (currentNode.Next != null)
+                while (currentNode.next != null)
                 {
-                    currentNode = currentNode.Next;
+                    currentNode = currentNode.next;
                 }
 
-                currentNode.Next = node;
-                node.Next = currentNode;
+                currentNode.next = node;
+                node.previous = currentNode;
 
-                Tail = node;
+                tail = node;
             }
 
-            Length++;
+            Console.WriteLine("New element was added");
+            Console.WriteLine(element);
+            _length++;
         }
 
         public void Remove(T element)
         {
-            Node<T> currentNode = Head;
+            Node<T> currentNode = head;
             Node<T> previousNode = null;
 
-            if (currentNode.Data === element)
+            if (element.Equals(currentNode.Data) == true)
             {
-                Head = currentNode.Next;
-                currentNode.Next.Previous = null;
+                head = currentNode.next;
+                currentNode.next.previous = null;
             }
             else
             {
-                while (currentNode.Data !== element)
+                while (element.Equals(currentNode.Data) == false)
                 {
                     previousNode = currentNode;
-                    currentNode = currentNode.Next;
+                    currentNode = currentNode.next;
                 }
-                previousNode.Next = currentNode.Next;
-                if (currentNode.Next == null)
+                previousNode.next = currentNode.next;
+                if (currentNode.next == null)
                 {
-                    Tail = currentNode.Previous;
+                    tail = currentNode.previous;
                 } else
                 {
-                    currentNode.Next.Previous = previousNode;
+                    currentNode.next.previous = previousNode;
                 }
             }
 
-            Length--;
+            Console.WriteLine("The element was removed");
+            Console.WriteLine(element);
+            _length--;
         }
 
         public int Size()
         {
-            return Length;
+            return _length;
+        }
+
+        public T[] ToArray()
+        {
+            T[] nodesArray = new T[Size()];
+
+            if (head != null)
+            {
+                Node<T> currentNode = head;
+                nodesArray[0] = currentNode.Data;
+
+                int index = 1;
+                while (currentNode.next != null)
+                {
+                    currentNode = currentNode.next;
+                    nodesArray[index] = currentNode.Data;
+                }
+            }
+
+            return nodesArray;
+        }
+
+        public bool ElementExists(T element)
+        {
+            return ToArray().Contains(element);
         }
     }
 }
