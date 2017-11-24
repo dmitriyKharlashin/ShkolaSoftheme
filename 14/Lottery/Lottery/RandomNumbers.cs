@@ -2,7 +2,7 @@
 
 namespace Lottery
 {
-    class RandomNumbers : AbstractNumbers, IIndexer
+    class RandomNumbers : AbstractNumbers
     {
 
         public int this[int index]
@@ -18,12 +18,12 @@ namespace Lottery
             Random rnd = new Random();
             do
             {
-                int current = rnd.Next((int)ENumbers.MIN_VALUE, (int)ENumbers.MAX_VALUE);
+                int current = rnd.Next((int)NUMBERTYPES.MIN_VALUE, (int)NUMBERTYPES.MAX_VALUE);
                 if (Array.IndexOf(_numbers, current) == -1)
                 {
                     _numbers[Length()] = current;
                 }
-            } while (Length() < (int)ENumbers.NUMBERS_COUNT);
+            } while (Length() < (int)NUMBERTYPES.NUMBERS_COUNT);
         }
 
     }

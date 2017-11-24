@@ -2,7 +2,7 @@
 
 namespace Lottery
 {
-    class PredictedNumbers : AbstractNumbers, IIndexer
+    class PredictedNumbers : AbstractNumbers
     {
         public int this[int index]
         {
@@ -12,7 +12,7 @@ namespace Lottery
             }
             set
             {
-                if (value < (int)ENumbers.MIN_VALUE || value > (int)ENumbers.MAX_VALUE)
+                if (value < (int)NUMBERTYPES.MIN_VALUE || value > (int)NUMBERTYPES.MAX_VALUE)
                 {
                     throw new ArgumentOutOfRangeException();
                 }

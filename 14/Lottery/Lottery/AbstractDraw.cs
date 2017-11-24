@@ -13,11 +13,11 @@ namespace Lottery
             {
                 try
                 {
-                    if (_predictedNumbers.Length() == (int)ENumbers.NUMBERS_COUNT)
+                    if (_predictedNumbers.Length() == (int)NUMBERTYPES.NUMBERS_COUNT)
                     {
                         break;
                     }
-                    Console.WriteLine("Enter unique number from {0}-{1}:", (int)ENumbers.MIN_VALUE, (int)ENumbers.MAX_VALUE);
+                    Console.WriteLine("Enter unique number from {0}-{1}:", (int)NUMBERTYPES.MIN_VALUE, (int)NUMBERTYPES.MAX_VALUE);
                     var number = Int32.Parse(Console.ReadLine().Trim(' '));
                     _predictedNumbers[_predictedNumbers.Length()] = number;
                     //lotteryNumbers.Add(number);

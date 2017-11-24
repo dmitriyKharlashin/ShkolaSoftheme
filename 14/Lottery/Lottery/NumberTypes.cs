@@ -1,6 +1,6 @@
 ﻿namespace Lottery
 {
-    enum ENumbers
+    enum NUMBERTYPES
     {
         MIN_VALUE = 1,
         NUMBERS_COUNT = 6,

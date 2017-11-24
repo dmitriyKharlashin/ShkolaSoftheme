@@ -2,8 +2,8 @@
 {
     abstract class AbstractNumbers
     {
-        protected int[] _numbers = new int[(int)ENumbers.NUMBERS_COUNT];
-
+        protected int[] _numbers = new int[(int)NUMBERTYPES.NUMBERS_COUNT];
+        
         /*
         public void Add(int number)
         {
