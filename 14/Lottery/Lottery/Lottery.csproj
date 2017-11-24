@@ -44,11 +44,10 @@
   <ItemGroup>
     <Compile Include="AbstractNumbers.cs" />
     <Compile Include="AbstractDraw.cs" />
-    <Compile Include="ENumbers.cs" />
+    <Compile Include="NumberTypes.cs" />
     <Compile Include="Draw.cs" />
     <Compile Include="RandomNumbers.cs" />
     <Compile Include="PredictedNumbers.cs" />
-    <Compile Include="IIndexer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
