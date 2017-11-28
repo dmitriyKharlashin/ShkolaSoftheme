@@ -11,7 +11,7 @@ namespace Authenticator
         static void Main(string[] args)
         {
             Console.WriteLine("User authenticator app!");
-            Console.WriteLine("To qiut from app, plase, enter \":q\"");
+            Console.WriteLine("To qiut from app, plase, enter \"exit\"");
             using (UserDataBase userDataBase = UserDataBase.GetInstance())
             {
                 do
@@ -24,7 +24,7 @@ namespace Authenticator
                         {
                             throw new NullReferenceException();
                         }
-                        if (name == ":q")
+                        if (name == "exit")
                         {
                             break;
                         }
@@ -34,7 +34,7 @@ namespace Authenticator
                         {
                             throw new NullReferenceException();
                         }
-                        if (password == ":q")
+                        if (password == "exit")
                         {
                             break;
                         }
