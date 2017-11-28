@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Authenticator
 {
-    class Database : IDataInfo
+    class UserDataBase : IUserDataBase
     {
-        static private Database instance = null;
+        private bool _disposed;
+        static private UserDataBase instance = null;
         private IUser[] _users;
         
         public int Length()
@@ -28,7 +29,7 @@ namespace Authenticator
             }
         }
 
-        private Database()
+        private UserDataBase()
         {
             if (_users == null)
             {
@@ -36,10 +37,15 @@ namespace Authenticator
             }
         }
 
-        static public Database GetInstance()
+        ~UserDataBase()
+        {
+            Dispose(false);
+        }
+
+        static public UserDataBase GetInstance()
         {
             return instance == null ?
-                instance = new Database() :
+                instance = new UserDataBase() :
                 instance;
         }
 
@@ -97,14 +103,42 @@ namespace Authenticator
             }
         }
 
+        public IUser[] GetUsers()
+        {
+            return _users;
+        }
+
         public void DisplayFullInfo()
         {
-            foreach (IUser user in _users)
+            Console.WriteLine("List of added users:");
+            foreach (IUser user in GetUsers())
             {
                 if(user != null)
                 {
                     user.DisplayFullInfo();
                 }
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_users != null)
+                    {
+                        DisplayFullInfo();
+                    }
+                }
+
+                _disposed = true;
             }
         }
     }

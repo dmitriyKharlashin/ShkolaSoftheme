@@ -47,8 +47,8 @@
     <Compile Include="EmailAuthenticator.cs" />
     <Compile Include="EmailValidator.cs" />
     <Compile Include="IAuthenticator.cs" />
-    <Compile Include="Database.cs" />
-    <Compile Include="IDataInfo.cs" />
+    <Compile Include="IUserDataBase.cs" />
+    <Compile Include="UserDataBase.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="NameAuthenticator.cs" />
     <Compile Include="NameValidator.cs" />

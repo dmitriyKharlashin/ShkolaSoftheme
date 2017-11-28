@@ -12,7 +12,7 @@ namespace Authenticator
         {
             AbstractValidator validator = new NameValidator();
             validator.Validate(name);
-            Database database = Database.GetInstance();
+            UserDataBase database = UserDataBase.GetInstance();
             IUser user = null;
             IUser foundedUser = database.FindByName(name);
             if (foundedUser == null)

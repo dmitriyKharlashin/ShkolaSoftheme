@@ -12,7 +12,7 @@ namespace Authenticator
         {
             AbstractValidator validator = new EmailValidator();
             validator.Validate(email);
-            Database database = Database.GetInstance();
+            UserDataBase database = UserDataBase.GetInstance();
             IUser user = null;
             IUser foundedUser = database.FindByEmail(email);
             if (foundedUser == null)
