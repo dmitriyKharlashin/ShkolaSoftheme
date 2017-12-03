@@ -6,85 +6,77 @@ using System.Threading.Tasks;
 
 namespace MobileProvider
 {
-    class MobileAccount<T> : IMobileAccount<T>
+    class MobileAccount : IMobileAccount
     {
-        public event EventHandler<MakeMessagingEventArgs<T>> SendSMSProcessingComplete;
-        public event EventHandler<MakeCallEventArgs<T>> MakeCallProcessingStart;
+        public event EventHandler<MakeMessagingEventArgs> SendSmsProcessingComplete;
+        public event EventHandler<MakeCallEventArgs> MakeCallProcessingStart;
 
-        private T _number;
-        private Dictionary<T, string> _addresses = new Dictionary<T, string>();
+        private readonly Dictionary<string, string> _addresses = new Dictionary<string, string>();
 
-        public T Number {
-            get
-            {
-                return _number;
-            }
-        }
+        public string Number { get; }
 
-        private Dictionary<T, string> Addresses
+        private Dictionary<string, string> Addresses
         {
-            get {
-                return _addresses;
-            }
+            get { return _addresses; }
         }
 
-        public MobileAccount(T number)
+        public MobileAccount(string number)
         {
-            _number = number;
+            Number = number;
         }
 
-        public void AddAddress(T number, string name)
+        public void AddAddress(string number, string name)
         {
             _addresses.Add(number, name);
         }
-        public void AddAddress(Dictionary<T, string> items)
+        public void AddAddress(Dictionary<string, string> items)
         {
-            foreach(KeyValuePair<T, string> item in items)
+            foreach(KeyValuePair<string, string> item in items)
             {
                 AddAddress(item.Key, item.Value);
             }
         }
 
-        public void SendSMS(string message, T receiver)
+        public void SendSms(string message, string receiver)
         {
-            if(SendSMSProcessingComplete != null)
+            SendSmsProcessingComplete?.Invoke(this, new MakeMessagingEventArgs(message, receiver));
+        }
+
+        public void ReceiveSms(string message, string sender)
+        {
+            if (IsConnectionValid(sender))
             {
-                SendSMSProcessingComplete.Invoke(this, new MakeMessagingEventArgs<T>(message, receiver));
+                string senderName = GetSenderNameFromAddressBook(sender);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Account {Number}: Message from {sender}({senderName}) - \"{message}\"");
+                Console.ResetColor();
             }
         }
-        public void ReceiveSMS(string message, T sender)
+        
+        public void MakeACall(string receiver)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            string senderName = GetSenderNameFromAddressBook(sender);
-            string senderNameTemplate = (senderName == null ? "" : "(" + senderName + ")");
-            Console.WriteLine("Account {0}: Message from {1}{3} - \"{2}\"", Number, sender, message, senderNameTemplate);
+            MakeCallProcessingStart?.Invoke(this, new MakeCallEventArgs(receiver));
         }
 
-        public void MakeACall(T receiver)
+        public void ReceiveCall(string caller)
         {
-            if (MakeCallProcessingStart != null)
+            if (IsConnectionValid(caller))
             {
-                MakeCallProcessingStart.Invoke(this, new MakeCallEventArgs<T>(receiver));
+                string senderName = GetSenderNameFromAddressBook(caller);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Account {Number}: Call from {caller}({senderName})");
+                Console.ResetColor();
             }
         }
 
-        public void ReceiveCall(T caller)
+        private string GetSenderNameFromAddressBook(string phoneNumber)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            string senderName = GetSenderNameFromAddressBook(caller);
-            string senderNameTemplate = (senderName == null ? "" : "(" + senderName + ")");
-            Console.WriteLine("Account {0}: Call with {1}{2}", Number, caller, senderNameTemplate);
-            Console.ResetColor();
+            return Addresses.FirstOrDefault(p => p.Key == phoneNumber).Value;
         }
 
-        private string GetSenderNameFromAddressBook(T number)
+        private bool IsConnectionValid(string phoneNumber)
         {
-            if (Addresses.ContainsKey(number))
-            {
-                return _addresses[number];
-            }
-
-            return null;
+            return Addresses.ContainsKey(phoneNumber);
         }
     }
 }

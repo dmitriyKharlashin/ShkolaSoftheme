@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace MobileProvider
 {
-    interface IMobileProvider<T>
+    internal interface IMobileProvider
     {
+        event Action<int, string, string> DeliveringSmsAction;
+        event Action<int, string, string> DeliveringCallAction;
+
         string Name { get; set; }
 
-        HashSet<IMobileAccount<T>> Accounts { get; }
+        ICollection<IMobileAccount> Accounts { get; }
 
-        void AddAccount(T mobile);
+        void AddAccount(string mobile);
     }
 }
