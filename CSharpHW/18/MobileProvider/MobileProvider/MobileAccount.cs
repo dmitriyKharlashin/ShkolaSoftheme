@@ -50,7 +50,12 @@ namespace MobileProvider
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"Account {Number}: Message from {sender}({senderName}) - \"{message}\"");
                 Console.ResetColor();
+
+                return;
             }
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Account {Number}: Message from non-whitelisted account: {sender} - \"{message}\"");
+            Console.ResetColor();
         }
         
         public void MakeACall(string receiver)
@@ -66,7 +71,12 @@ namespace MobileProvider
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"Account {Number}: Call from {caller}({senderName})");
                 Console.ResetColor();
+
+                return;
             }
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Account {Number}: Call from non-whitelisted account {caller}");
+            Console.ResetColor();
         }
 
         private string GetSenderNameFromAddressBook(string phoneNumber)

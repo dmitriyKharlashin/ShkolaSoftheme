@@ -4,7 +4,7 @@ namespace MobileProvider
 {
     public class EventLogger : ILogger
     {
-        public void GetMessageEvent(int status, string partisipant1, string partisipant2)
+        public void AddMessageEvent(int status, string partisipant1, string partisipant2)
         {
             switch (status)
             {
@@ -17,7 +17,7 @@ namespace MobileProvider
             }
         }
 
-        public void GetCallEvent(int status, string partisipant1, string partisipant2)
+        public void AddCallEvent(int status, string partisipant1, string partisipant2)
         {
             switch (status)
             {

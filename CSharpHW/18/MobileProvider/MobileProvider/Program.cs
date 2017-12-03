@@ -15,57 +15,68 @@ namespace MobileProvider
                 // add new mobile provider
                 IMobileProvider mobileProviderVodaphone = new Provider("Vodaphone");
                 // initialize loggers
-                ILogger eventLogger = new EventLogger();
-                //ILogger callLogger = new CallLogger();
+                EventLogger eventLogger = new EventLogger();
+                CallLogger callLogger = new CallLogger();
 
                 // subscribe loggers into provider events
-                mobileProviderVodaphone.DeliveringSmsAction += eventLogger.GetMessageEvent;
-                mobileProviderVodaphone.DeliveringCallAction += eventLogger.GetCallEvent;
+                mobileProviderVodaphone.DeliveringSmsAction += eventLogger.AddMessageEvent;
+                mobileProviderVodaphone.DeliveringCallAction += eventLogger.AddCallEvent;
+                mobileProviderVodaphone.DeliveringSmsAction += callLogger.AddMessageEvent;
+                mobileProviderVodaphone.DeliveringCallAction += callLogger.AddCallEvent;
 
                 // add accounts
-                mobileProviderVodaphone.AddAccount("0951111111");
-                mobileProviderVodaphone.AddAccount("0961111111");
-                mobileProviderVodaphone.AddAccount("0501111111");
-                mobileProviderVodaphone.AddAccount("0731111111");
-                mobileProviderVodaphone.AddAccount("0661111111");
-                mobileProviderVodaphone.AddAccount("0671111111");
-                mobileProviderVodaphone.AddAccount("0951111111");
+                mobileProviderVodaphone.AddAccount("1");
+                mobileProviderVodaphone.AddAccount("2");
+                mobileProviderVodaphone.AddAccount("3");
+                mobileProviderVodaphone.AddAccount("4");
+                mobileProviderVodaphone.AddAccount("5");
+                mobileProviderVodaphone.AddAccount("6");
+                mobileProviderVodaphone.AddAccount("7");
+                mobileProviderVodaphone.AddAccount("2");
+
 
                 // try to find number in mobile provider account
-                IMobileAccount mobileAccount1 = mobileProviderVodaphone.Accounts.FirstOrDefault(p => p.Number.Equals("0501111111"));
-                IMobileAccount mobileAccount2 = mobileProviderVodaphone.Accounts.FirstOrDefault(p => p.Number.Equals("0951111111"));
-                IMobileAccount mobileAccount3 = mobileProviderVodaphone.Accounts.FirstOrDefault(p => p.Number.Equals("0661111111"));
+                IMobileAccount mobileAccount1 = mobileProviderVodaphone.Accounts.FirstOrDefault(p => p.Number.Equals("1"));
+                IMobileAccount mobileAccount2 = mobileProviderVodaphone.Accounts.FirstOrDefault(p => p.Number.Equals("2"));
+                IMobileAccount mobileAccount3 = mobileProviderVodaphone.Accounts.FirstOrDefault(p => p.Number.Equals("3"));
 
                 mobileAccount1?.AddAddress(new Dictionary<string, string>(){
-                    {"0671111111", "Allain"},
-                    {"0961111111", "Edgar"},
-                    {"0661111111", "Milan"},
+                    {"7", "Allain"},
+                    {"6", "Edgar"},
+                    {"2", "Milan"},
                 });
-                mobileAccount2?.AddAddress("0501111111", "Albert");
+                mobileAccount2?.AddAddress("1", "Albert");
                 mobileAccount3?.AddAddress(new Dictionary<string, string>(){
-                    {"0671111111", "Marge"},
-                    {"0731111111", "Vins"},
-                    {"0951111111", "Robert"},
+                    {"2", "Marge"},
+                    {"1", "Vins"},
+                    {"5", "Robert"},
                 });
-
-                // successful deliverying
-                mobileAccount1?.SendSms("Hello World", "0951111111");
-                // unsuccessful deliverying
-                mobileAccount1?.SendSms("Hello World", "0951111112");
-                // successfull call
-                mobileAccount1?.MakeACall("0671111111");
-                mobileAccount1?.MakeACall("0961111111");
+                
+                mobileAccount1?.SendSms("Hello World", "2");
+                mobileAccount1?.SendSms("Hello World", "3");
+                mobileAccount1?.MakeACall("2");
+                mobileAccount1?.MakeACall("7");
 
                 Console.WriteLine();
                 // change mobile account
-                // successful deliverying
-                mobileAccount2?.SendSms("Hello Another World", "0661111111");
-                mobileAccount2?.SendSms("Connect World", "0661111111");
+                mobileAccount2?.SendSms("Hello Another World", "5");
+                mobileAccount2?.SendSms("Connect World", "3");
 
-                // successfull call
-                mobileAccount2?.MakeACall("0731111111");
-                // unsucsessfull call
-                mobileAccount2?.MakeACall("0991111111");
+                mobileAccount2?.MakeACall("1");
+                mobileAccount2?.MakeACall("3");
+                mobileAccount2?.MakeACall("5");
+
+                mobileAccount3?.MakeACall("1");
+                mobileAccount3?.MakeACall("2");
+                mobileAccount3?.MakeACall("5");
+                mobileAccount3?.SendSms("Hello World", "2");
+                mobileAccount3?.SendSms("Hello World", "6");
+                mobileAccount3?.MakeACall("2");
+                mobileAccount3?.MakeACall("7");
+
+                // show rates
+                callLogger.ShowTopSenderList();
+                callLogger.ShowTopRecieverList();
             }
             catch(Exception ex)
             {

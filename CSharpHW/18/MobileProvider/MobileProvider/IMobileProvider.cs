@@ -15,6 +15,8 @@ namespace MobileProvider
 
         ICollection<IMobileAccount> Accounts { get; }
 
+        void AddAccount(IMobileAccount account);
+
         void AddAccount(string mobile);
     }
 }

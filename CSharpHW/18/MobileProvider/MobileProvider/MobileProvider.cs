@@ -11,7 +11,7 @@ namespace MobileProvider
         public event Action<int, string, string> DeliveringSmsAction;
         public event Action<int, string, string> DeliveringCallAction;
 
-        private readonly HashSet<IMobileAccount> _accounts = new HashSet<IMobileAccount>();
+        private readonly List<IMobileAccount> _accounts = new List<IMobileAccount>();
 
         public string Name { get; set; }
 
@@ -24,14 +24,27 @@ namespace MobileProvider
         {
             Name = name;
         }
-        
-        public void AddAccount(string mobile)
+
+        private bool IsNumberServiced(IMobileAccount account)
         {
-            MobileAccount mobileAccount = new MobileAccount(mobile);
-            Accounts.Add(mobileAccount);
-            
-            mobileAccount.SendSmsProcessingComplete += ProvideConnection;
-            mobileAccount.MakeCallProcessingStart += ProvideConnection;
+            return Accounts.Any(p => p.Number == account.Number);
+        }
+
+        public void AddAccount(IMobileAccount account)
+        {
+            if (!IsNumberServiced(account))
+            {
+                Accounts.Add(account);
+
+                account.SendSmsProcessingComplete += ProvideConnection;
+                account.MakeCallProcessingStart += ProvideConnection;
+            }
+        }
+
+        public void AddAccount(string phoneNumber)
+        {
+            MobileAccount mobileAccount = new MobileAccount(phoneNumber);
+            AddAccount(mobileAccount);
         }
 
         private void ProvideConnection(object s, MakeMessagingEventArgs e)

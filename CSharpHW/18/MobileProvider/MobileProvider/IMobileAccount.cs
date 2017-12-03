@@ -8,6 +8,9 @@ namespace MobileProvider
 {
     interface IMobileAccount
     {
+        event EventHandler<MakeMessagingEventArgs> SendSmsProcessingComplete;
+        event EventHandler<MakeCallEventArgs> MakeCallProcessingStart;
+
         string Number { get; }
 
         void AddAddress(string number, string name);
