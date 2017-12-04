@@ -6,69 +6,79 @@ using System.Threading.Tasks;
 
 namespace MobileProvider
 {
-    class Provider<T> : IMobileProvider<T>
+    class Provider : IMobileProvider
     {
-        private HashSet<IMobileAccount<T>> _accounts;
-        
-        public HashSet<IMobileAccount<T>> Accounts {
-            get {
-                return _accounts;
-            }
-        }
+        public event Action<int, string, string> DeliveringSmsAction;
+        public event Action<int, string, string> DeliveringCallAction;
+
+        private readonly List<IMobileAccount> _accounts = new List<IMobileAccount>();
 
         public string Name { get; set; }
 
+        public ICollection<IMobileAccount> Accounts
+        {
+            get { return _accounts; }
+        }
+
         public Provider(string name)
         {
-            _accounts = new HashSet<IMobileAccount<T>>();
             Name = name;
         }
-        
-        public void AddAccount(T mobile)
+
+        private bool IsNumberServiced(IMobileAccount account)
         {
-            MobileAccount<T> mobileAccount = new MobileAccount<T>(mobile);
-            _accounts.Add(mobileAccount);
-            
-            mobileAccount.SendSMSProcessingComplete += ProvideConnection;
-            mobileAccount.MakeCallProcessingStart += ProvideConnection;
+            return Accounts.Any(p => p.Number == account.Number);
         }
 
-        private void ProvideConnection(object s, MakeMessagingEventArgs<T> e)
+        public void AddAccount(IMobileAccount account)
         {
-            MobileAccount<T> sender = s as MobileAccount<T>;
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("Provider is trying to sent message to receiver...");
-            IMobileAccount<T> receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber));
-            if (receiver != null && !receiver.Equals("") && !e.ReceiverNumber.Equals(sender.Number))
+            if (!IsNumberServiced(account))
             {
-                Console.WriteLine("Message: from {0} to {1} was successfully sent", sender.Number, receiver.Number);
-                receiver.ReceiveSMS(e.Message, sender.Number);
+                Accounts.Add(account);
+
+                account.SendSmsProcessingComplete += ProvideConnection;
+                account.MakeCallProcessingStart += ProvideConnection;
             }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Message: from {0} to {1} was not delivered!", sender.Number, e.ReceiverNumber);
-            }
-            Console.ResetColor();
         }
 
-        private void ProvideConnection(object s, MakeCallEventArgs<T> e)
+        public void AddAccount(string phoneNumber)
         {
-            MobileAccount<T> sender = s as MobileAccount<T>;
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("Provider is trying to connect caller with receiver...");
-            IMobileAccount<T> receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber));
-            if (receiver != null && !receiver.Equals("") && !e.ReceiverNumber.Equals(sender.Number))
+            MobileAccount mobileAccount = new MobileAccount(phoneNumber);
+            AddAccount(mobileAccount);
+        }
+
+        private void ProvideConnection(object s, MakeMessagingEventArgs e)
+        {
+            if (!(s is MobileAccount sender))
             {
-                Console.WriteLine("Call: from {0} to {1} was successfully started", sender.Number, receiver.Number);
+                throw new ArgumentException();
+            }
+
+            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(sender.Number));
+            int messageStatus = (int)LoggerStatusTypes.Error;
+            if (receiver != null)
+            {
+                messageStatus = (int) LoggerStatusTypes.Success;
+                receiver.ReceiveSms(e.Message, sender.Number);
+            }
+            DeliveringSmsAction?.Invoke(messageStatus, sender.Number, e.ReceiverNumber);
+        }
+
+        private void ProvideConnection(object s, MakeCallEventArgs e)
+        {
+            if (!(s is MobileAccount sender))
+            {
+                throw new ArgumentException();
+            }
+
+            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(sender.Number));
+            int messageStatus = (int)LoggerStatusTypes.Error;
+            if (receiver != null)
+            {
+                messageStatus = (int) LoggerStatusTypes.Success;
                 receiver.ReceiveCall(sender.Number);
             }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Call: from {0} to {1} was not started!", sender.Number, e.ReceiverNumber);
-            }
-            Console.ResetColor();
+            DeliveringCallAction?.Invoke(messageStatus, sender.Number, e.ReceiverNumber);
         }
     }
 }
