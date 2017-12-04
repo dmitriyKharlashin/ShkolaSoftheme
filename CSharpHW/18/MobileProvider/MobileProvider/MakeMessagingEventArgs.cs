@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace MobileProvider
 {
-    class MakeMessagingEventArgs : EventArgs
+    class MakeMessagingEventArgs<T> : EventArgs
     {
-        public MakeMessagingEventArgs(string message, string receiverNumber)
+        public MakeMessagingEventArgs(string message, T receiverNumber)
         {
             ReceiverNumber = receiverNumber;
             Message = message;
         }
 
-        public string ReceiverNumber { get; private set; }
+        public T ReceiverNumber { get; private set; }
 
         public string Message { get; private set; }
     }

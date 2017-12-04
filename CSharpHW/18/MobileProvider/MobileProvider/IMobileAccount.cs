@@ -6,23 +6,20 @@ using System.Threading.Tasks;
 
 namespace MobileProvider
 {
-    interface IMobileAccount
+    interface IMobileAccount<T>
     {
-        event EventHandler<MakeMessagingEventArgs> SendSmsProcessingComplete;
-        event EventHandler<MakeCallEventArgs> MakeCallProcessingStart;
+        T Number { get; }
 
-        string Number { get; }
+        void AddAddress(T number, string name);
 
-        void AddAddress(string number, string name);
-
-        void AddAddress(Dictionary<string, string> args);
+        void AddAddress(Dictionary<T, string> args);
             
-        void ReceiveSms(string message, string sender);
+        void ReceiveSMS(string message, T sender);
 
-        void SendSms(string message, string receiver);
+        void SendSMS(string message, T receiver);
 
-        void MakeACall(string receiver);
+        void MakeACall(T receiver);
 
-        void ReceiveCall(string caller);
+        void ReceiveCall(T caller);
     }
 }

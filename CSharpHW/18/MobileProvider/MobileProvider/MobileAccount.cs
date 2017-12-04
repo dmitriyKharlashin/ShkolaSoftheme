@@ -6,87 +6,85 @@ using System.Threading.Tasks;
 
 namespace MobileProvider
 {
-    class MobileAccount : IMobileAccount
+    class MobileAccount<T> : IMobileAccount<T>
     {
-        public event EventHandler<MakeMessagingEventArgs> SendSmsProcessingComplete;
-        public event EventHandler<MakeCallEventArgs> MakeCallProcessingStart;
+        public event EventHandler<MakeMessagingEventArgs<T>> SendSMSProcessingComplete;
+        public event EventHandler<MakeCallEventArgs<T>> MakeCallProcessingStart;
 
-        private readonly Dictionary<string, string> _addresses = new Dictionary<string, string>();
+        private T _number;
+        private Dictionary<T, string> _addresses = new Dictionary<T, string>();
 
-        public string Number { get; }
-
-        private Dictionary<string, string> Addresses
-        {
-            get { return _addresses; }
+        public T Number {
+            get
+            {
+                return _number;
+            }
         }
 
-        public MobileAccount(string number)
+        private Dictionary<T, string> Addresses
         {
-            Number = number;
+            get {
+                return _addresses;
+            }
         }
 
-        public void AddAddress(string number, string name)
+        public MobileAccount(T number)
+        {
+            _number = number;
+        }
+
+        public void AddAddress(T number, string name)
         {
             _addresses.Add(number, name);
         }
-        public void AddAddress(Dictionary<string, string> items)
+        public void AddAddress(Dictionary<T, string> items)
         {
-            foreach(KeyValuePair<string, string> item in items)
+            foreach(KeyValuePair<T, string> item in items)
             {
                 AddAddress(item.Key, item.Value);
             }
         }
 
-        public void SendSms(string message, string receiver)
+        public void SendSMS(string message, T receiver)
         {
-            SendSmsProcessingComplete?.Invoke(this, new MakeMessagingEventArgs(message, receiver));
-        }
-
-        public void ReceiveSms(string message, string sender)
-        {
-            if (IsConnectionValid(sender))
+            if(SendSMSProcessingComplete != null)
             {
-                string senderName = GetSenderNameFromAddressBook(sender);
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"Account {Number}: Message from {sender}({senderName}) - \"{message}\"");
-                Console.ResetColor();
-
-                return;
+                SendSMSProcessingComplete.Invoke(this, new MakeMessagingEventArgs<T>(message, receiver));
             }
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Account {Number}: Message from non-whitelisted account: {sender} - \"{message}\"");
-            Console.ResetColor();
         }
-        
-        public void MakeACall(string receiver)
+        public void ReceiveSMS(string message, T sender)
         {
-            MakeCallProcessingStart?.Invoke(this, new MakeCallEventArgs(receiver));
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            string senderName = GetSenderNameFromAddressBook(sender);
+            string senderNameTemplate = (senderName == null ? "" : "(" + senderName + ")");
+            Console.WriteLine("Account {0}: Message from {1}{3} - \"{2}\"", Number, sender, message, senderNameTemplate);
         }
 
-        public void ReceiveCall(string caller)
+        public void MakeACall(T receiver)
         {
-            if (IsConnectionValid(caller))
+            if (MakeCallProcessingStart != null)
             {
-                string senderName = GetSenderNameFromAddressBook(caller);
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"Account {Number}: Call from {caller}({senderName})");
-                Console.ResetColor();
-
-                return;
+                MakeCallProcessingStart.Invoke(this, new MakeCallEventArgs<T>(receiver));
             }
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Account {Number}: Call from non-whitelisted account {caller}");
+        }
+
+        public void ReceiveCall(T caller)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            string senderName = GetSenderNameFromAddressBook(caller);
+            string senderNameTemplate = (senderName == null ? "" : "(" + senderName + ")");
+            Console.WriteLine("Account {0}: Call with {1}{2}", Number, caller, senderNameTemplate);
             Console.ResetColor();
         }
 
-        private string GetSenderNameFromAddressBook(string phoneNumber)
+        private string GetSenderNameFromAddressBook(T number)
         {
-            return Addresses.FirstOrDefault(p => p.Key == phoneNumber).Value;
-        }
+            if (Addresses.ContainsKey(number))
+            {
+                return _addresses[number];
+            }
 
-        private bool IsConnectionValid(string phoneNumber)
-        {
-            return Addresses.ContainsKey(phoneNumber);
+            return null;
         }
     }
 }

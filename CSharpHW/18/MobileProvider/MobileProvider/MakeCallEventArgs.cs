@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace MobileProvider
 {
-    class MakeCallEventArgs : EventArgs
+    class MakeCallEventArgs<T> : EventArgs
     {
 
-        public MakeCallEventArgs(string receiverNumber)
+        public MakeCallEventArgs(T receiverNumber)
         {
             ReceiverNumber = receiverNumber;
         }
 
-        public string ReceiverNumber { get; private set; }
+        public T ReceiverNumber { get; private set; }
     }
 }
