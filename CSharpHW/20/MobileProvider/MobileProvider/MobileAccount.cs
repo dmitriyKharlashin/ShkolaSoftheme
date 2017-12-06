@@ -23,7 +23,7 @@ namespace MobileProvider
         //[StringLength(255, MinimumLength = 5)]
         public string Surname { get; }
 
-        [EmailAddress]
+        //[EmailAddress]
         public string Email { get; }
 
         //[StringLength(2 | 4)]
@@ -119,17 +119,17 @@ namespace MobileProvider
                 errors.Add(new ValidationResult("Surname is required"));
 
             if (this?.Name?.Length < 5 && this?.Name?.Length > 255)
-                errors.Add(new ValidationResult("Name should have letters between 5 and 255"));
+                errors.Add(new ValidationResult($"Name: {this.Name}. Name should have letters between 5 and 255"));
 
             if (this?.Surname?.Length < 5 && this?.Surname?.Length > 255)
-                errors.Add(new ValidationResult("Surname should have letters between 5 and 255"));
+                errors.Add(new ValidationResult($"Surname: {this.Surname}. Surname should have letters between 5 and 255"));
 
             if (this?.BirthYear < 1930 || this?.BirthYear > 2017)
-                errors.Add(new ValidationResult("Age is not valid"));
+                errors.Add(new ValidationResult($"Birth year: {this.BirthYear}. Birth year is not valid"));
 
             if (!string.IsNullOrWhiteSpace(this.Email) && !Regex.IsMatch(this.Email, "^[_a-z0-9-]+(.[a-z0-9-]+)@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$"))
             {
-                errors.Add(new ValidationResult("Email has not valid format"));
+                errors.Add(new ValidationResult($"Email: {this.Email}. Email has not valid format"));
             }
 
             return errors;

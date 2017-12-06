@@ -31,8 +31,8 @@ namespace MobileProvider
                 birthYear: 1220,
                 email: "account@mail.com"
             );
-            ValidationContext context1 = new ValidationContext(mobileAccount1);
-            if (mobileAccount1.Validate(context1).ToList().Count == 0)
+
+            if (Validate(mobileAccount1, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount1);
                 Console.WriteLine(mobileAccount1);
@@ -45,8 +45,8 @@ namespace MobileProvider
                 birthYear: 1970,
                 email: "hhh"
             );
-            ValidationContext context2 = new ValidationContext(mobileAccount2);
-            if (mobileAccount2.Validate(context2).ToList().Count == 0)
+            
+            if (Validate(mobileAccount2, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount2);
                 Console.WriteLine(mobileAccount2);
@@ -60,8 +60,8 @@ namespace MobileProvider
                 birthYear: 1980,
                 email: "test_1980@account.co.uk"
             );
-            ValidationContext context3 = new ValidationContext(mobileAccount3);
-            if (mobileAccount3.Validate(context3).ToList().Count == 0)
+
+            if (Validate(mobileAccount3, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount3);
                 Console.WriteLine(mobileAccount3);
@@ -75,8 +75,8 @@ namespace MobileProvider
                 birthYear: 1955,
                 email: "acccs@account.co.uk"
             );
-            ValidationContext context4 = new ValidationContext(mobileAccount4);
-            if (mobileAccount4.Validate(context4).ToList().Count == 0)
+
+            if (Validate(mobileAccount4, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount4);
                 Console.WriteLine(mobileAccount4);
@@ -90,14 +90,32 @@ namespace MobileProvider
                 birthYear: 1934,
                 email: "acccs@dkkdk.co.uk"
             );
-            ValidationContext context5 = new ValidationContext(mobileAccount5);
-            if (mobileAccount5.Validate(context5).ToList().Count == 0)
+
+            if (Validate(mobileAccount5, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount5);
                 Console.WriteLine(mobileAccount5);
             }
             Console.WriteLine();
 
+        }
+
+        static bool Validate(IMobileAccount mobileAccount, IMobileProvider mobileProvider)
+        {
+            var results = new List<ValidationResult>();
+            ValidationContext context = new ValidationContext(mobileAccount);
+            var isValid = Validator.TryValidateObject(mobileAccount, context, results, true);
+            if (!isValid)
+            {
+                foreach (var error in results)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine(error.ErrorMessage);
+                    Console.ResetColor();
+                }
+            }
+
+            return isValid;
         }
     }
 }

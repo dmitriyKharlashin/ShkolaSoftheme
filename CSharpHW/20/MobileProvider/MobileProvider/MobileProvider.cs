@@ -41,39 +41,41 @@ namespace MobileProvider
                 account.MakeCallProcessingStart += ProvideConnection;
             //}
         }
-        
-        private void ProvideConnection(object s, MakeMessagingEventArgs e)
+
+        private void ProvideConnection(object sender, MakeMessagingEventArgs e)
         {
-            if (!(s is MobileAccount sender))
+            var account = sender as MobileAccount;
+            if (account == null)
             {
                 throw new ArgumentException();
             }
 
-            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(sender.Number));
+            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
             LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
             if (receiver != null)
             {
                 messageStatus = LoggerStatusTypes.Success;
-                receiver.ReceiveSms(e.Message, sender.Number);
+                receiver.ReceiveSms(e.Message, account.Number);
             }
-            DeliveringSmsAction?.Invoke(messageStatus, sender.Number, e.ReceiverNumber);
+            DeliveringSmsAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
         }
 
-        private void ProvideConnection(object s, MakeCallEventArgs e)
+        private void ProvideConnection(object sender, MakeCallEventArgs e)
         {
-            if (!(s is MobileAccount sender))
+            var account = sender as MobileAccount;
+            if (account == null)
             {
                 throw new ArgumentException();
             }
 
-            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(sender.Number));
+            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
             LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
             if (receiver != null)
             {
                 messageStatus = LoggerStatusTypes.Success;
-                receiver.ReceiveCall(sender.Number);
+                receiver.ReceiveCall(account.Number);
             }
-            DeliveringCallAction?.Invoke(messageStatus, sender.Number, e.ReceiverNumber);
+            DeliveringCallAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
         }
 
         private int GeneratePhoneNumber()
