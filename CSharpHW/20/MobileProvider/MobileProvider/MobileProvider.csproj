@@ -43,9 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallLog.cs" />
     <Compile Include="CallLogger.cs" />
+    <Compile Include="ConnectionTypes.cs" />
     <Compile Include="EventLogger.cs" />
-    <Compile Include="ExampleAccounts.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="IMobileAccount.cs" />
     <Compile Include="IMobileProvider.cs" />

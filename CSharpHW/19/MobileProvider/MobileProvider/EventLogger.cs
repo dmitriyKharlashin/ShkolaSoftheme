@@ -4,7 +4,7 @@ namespace MobileProvider
 {
     public class EventLogger : ILogger
     {
-        public void AddMessageEvent(int status, int sender, int reciever)
+        public void AddMessageEvent(LoggerStatusTypes status, int sender, int reciever)
         {
             switch (status)
             {
@@ -17,7 +17,7 @@ namespace MobileProvider
             }
         }
 
-        public void AddCallEvent(int status, int sender, int partisipant2)
+        public void AddCallEvent(LoggerStatusTypes status, int sender, int partisipant2)
         {
             switch (status)
             {
@@ -50,9 +50,9 @@ namespace MobileProvider
             return $"Call: from {partisipant1} to {partisipant2} was not started!";
         }
 
-        private void ShowLog(int status, string message)
+        private void ShowLog(LoggerStatusTypes status, string message)
         {
-            Console.ForegroundColor = status == (int) LoggerStatusTypes.Success ?
+            Console.ForegroundColor = status == LoggerStatusTypes.Success ?
                 (ConsoleColor) LoggerColorTypes.Info :
                 (ConsoleColor) LoggerColorTypes.Alert;
             Console.WriteLine(message);

@@ -4,28 +4,28 @@ namespace MobileProvider
 {
     public class EventLogger : ILogger
     {
-        public void AddMessageEvent(int status, int partisipant1, int partisipant2)
+        public void AddMessageEvent(int status, int sender, int reciever)
         {
             switch (status)
             {
                 case (int) LoggerStatusTypes.Success:
-                    ShowLog(status, PrepareSmsSuccessLog(partisipant1, partisipant2));
+                    ShowLog(status, PrepareSmsSuccessLog(sender, reciever));
                     break;
                 default:
-                    ShowLog(status, PrepareSmsErrorLog(partisipant1, partisipant2));
+                    ShowLog(status, PrepareSmsErrorLog(sender, reciever));
                     break;
             }
         }
 
-        public void AddCallEvent(int status, int partisipant1, int partisipant2)
+        public void AddCallEvent(int status, int sender, int partisipant2)
         {
             switch (status)
             {
                 case (int)LoggerStatusTypes.Success:
-                    ShowLog(status, PrepareCallSuccessLog(partisipant1, partisipant2));
+                    ShowLog(status, PrepareCallSuccessLog(sender, partisipant2));
                     break;
                 default:
-                    ShowLog(status, PrepareCallErrorLog(partisipant1, partisipant2));
+                    ShowLog(status, PrepareCallErrorLog(sender, partisipant2));
                     break;
             }
         }
