@@ -6,33 +6,21 @@ namespace MobileProvider
 {
     public class CallLogger : ILogger
     {
-        private readonly List<Dictionary<string, string>> _eventsList = new List<Dictionary<string, string>>();
+        private readonly List<CallLog> _eventsList = new List<CallLog>();
 
-        public List<Dictionary<string, string>> EventsList
+        public List<CallLog> EventsList
         {
             get { return _eventsList; }
         }
 
-        public void AddCallEvent(int status, string partisipant1, string partisipant2)
+        public void AddCallEvent(int status, int sender, int reciever)
         {
-            EventsList?.Add(new Dictionary<string, string>
-            {
-                { "status", status == 0 ? "success" : "error" },
-                { "reciepient", partisipant2 },
-                { "sender", partisipant1 },
-                { "connection_type", "Call" },
-            });
+            EventsList?.Add(new CallLog(status, sender, reciever, ConnectionTypes.Call));
         }
 
-        public void AddMessageEvent(int status, string partisipant1, string partisipant2)
+        public void AddMessageEvent(int status, int sender, int reciever)
         {
-            EventsList?.Add(new Dictionary<string, string>
-            {
-                { "status", status == 0 ? "success" : "error" },
-                { "reciepient", partisipant2 },
-                { "sender", partisipant1 },
-                { "connection_type", "Sms" },
-            });
+            EventsList?.Add(new CallLog(status, sender, reciever, ConnectionTypes.Message));
         }
 
         public void ShowTopSenderList()
@@ -42,13 +30,18 @@ namespace MobileProvider
 
         public void ShowTopSenderList(int limit)
         {
-            KeyValuePair<string, double>[] sortedList = GetTopList("sender", limit);
+            var topList = EventsList
+                .GroupBy(p => p.Sender)
+                .Select(g => new { Sender = g.Key, Events = g.Select(p => p), Sum = g.Sum(p => p.ConnectionType == ConnectionTypes.Call ? 1 : 0.5) })
+                .OrderByDescending(g => g.Sum)
+                .Take(limit)
+                .ToArray();
 
             Console.WriteLine();
             Console.WriteLine("Top sender rate:");
-            foreach (KeyValuePair<string, double> listItem in sortedList)
+            foreach (var listItem in topList)
             {
-                Console.WriteLine($"Receiver {listItem.Key} - {listItem.Value}");
+                Console.WriteLine($"Sender {listItem.Sender} - {listItem.Sum}");
             }
             Console.WriteLine();
         }
@@ -59,51 +52,20 @@ namespace MobileProvider
 
         public void ShowTopRecieverList(int limit)
         {
-            KeyValuePair<string, double>[] sortedList = GetTopList("reciepient", limit);
+            var topList = EventsList
+                .GroupBy(p => p.Reciever)
+                .Select(g => new { Reciever = g.Key, Sum = g.Sum(p => p.ConnectionType == ConnectionTypes.Call ? 1 : 0.5) })
+                .OrderByDescending(g => g.Sum)
+                .Take(limit)
+                .ToArray();
 
             Console.WriteLine();
-            Console.WriteLine("Top reciepient rate:");
-            foreach (KeyValuePair<string, double> listItem in sortedList)
+            Console.WriteLine("Top reciever rate:");
+            foreach (var listItem in topList)
             {
-                Console.WriteLine($"Sender {listItem.Key} - {listItem.Value}");
+                Console.WriteLine($"Reciever {listItem.Reciever} - {listItem.Sum}");
             }
             Console.WriteLine();
-        }
-
-        public KeyValuePair<string, double>[] GetTopList(string type, int limit)
-        {
-            IGrouping<string, Dictionary<string, string>>[] logsList = (from eventItem in EventsList
-                group eventItem by eventItem[type]).ToArray();
-
-            Dictionary<string, double> nonSortedList = CalculateEventsRate(logsList);
-
-            var sortedList = nonSortedList.OrderByDescending(e => e.Value).Take(limit).ToArray();
-
-            return sortedList;
-        }
-
-        private Dictionary<string, double> CalculateEventsRate(IGrouping<string, Dictionary<string, string>>[] logsList)
-        {
-            var nonSortedList = new Dictionary<string, double>();
-
-            foreach (var logsItem in logsList)
-            {
-                double rate = 0;
-                foreach (var logsItemData in logsItem)
-                {
-                    if (logsItemData["connection_type"] == "Call")
-                    {
-                        rate += 1;
-                    }
-                    else
-                    {
-                        rate += 0.5;
-                    }
-                }
-                nonSortedList.Add(logsItem.Key, rate);
-            }
-
-            return nonSortedList;
         }
     }
 }

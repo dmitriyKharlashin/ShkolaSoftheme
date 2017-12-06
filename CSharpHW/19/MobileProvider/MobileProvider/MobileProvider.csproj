@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallLogger.cs" />
+    <Compile Include="CallLog.cs" />
+    <Compile Include="ConnectionTypes.cs" />
     <Compile Include="EventLogger.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="IMobileAccount.cs" />

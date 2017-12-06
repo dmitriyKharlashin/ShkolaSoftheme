@@ -9,11 +9,11 @@ namespace MobileProvider
     class MakeCallEventArgs : EventArgs
     {
 
-        public MakeCallEventArgs(string receiverNumber)
+        public MakeCallEventArgs(int receiverNumber)
         {
             ReceiverNumber = receiverNumber;
         }
 
-        public string ReceiverNumber { get; private set; }
+        public int ReceiverNumber { get; private set; }
     }
 }

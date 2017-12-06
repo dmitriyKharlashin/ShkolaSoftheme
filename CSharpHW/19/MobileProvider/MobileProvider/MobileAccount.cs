@@ -11,38 +11,38 @@ namespace MobileProvider
         public event EventHandler<MakeMessagingEventArgs> SendSmsProcessingComplete;
         public event EventHandler<MakeCallEventArgs> MakeCallProcessingStart;
 
-        private readonly Dictionary<string, string> _addresses = new Dictionary<string, string>();
+        private readonly Dictionary<int, string> _addresses = new Dictionary<int, string>();
 
-        public string Number { get; }
+        public int Number { get; }
 
-        private Dictionary<string, string> Addresses
+        private Dictionary<int, string> Addresses
         {
             get { return _addresses; }
         }
 
-        public MobileAccount(string number)
+        public MobileAccount(int number)
         {
             Number = number;
         }
 
-        public void AddAddress(string number, string name)
+        public void AddAddress(int number, string name)
         {
             _addresses.Add(number, name);
         }
-        public void AddAddress(Dictionary<string, string> items)
+        public void AddAddress(Dictionary<int, string> items)
         {
-            foreach(KeyValuePair<string, string> item in items)
+            foreach(KeyValuePair<int, string> item in items)
             {
                 AddAddress(item.Key, item.Value);
             }
         }
 
-        public void SendSms(string message, string receiver)
+        public void SendSms(string message, int receiver)
         {
             SendSmsProcessingComplete?.Invoke(this, new MakeMessagingEventArgs(message, receiver));
         }
 
-        public void ReceiveSms(string message, string sender)
+        public void ReceiveSms(string message, int sender)
         {
             if (IsConnectionValid(sender))
             {
@@ -58,12 +58,12 @@ namespace MobileProvider
             Console.ResetColor();
         }
         
-        public void MakeACall(string receiver)
+        public void MakeACall(int receiver)
         {
             MakeCallProcessingStart?.Invoke(this, new MakeCallEventArgs(receiver));
         }
 
-        public void ReceiveCall(string caller)
+        public void ReceiveCall(int caller)
         {
             if (IsConnectionValid(caller))
             {
@@ -79,12 +79,12 @@ namespace MobileProvider
             Console.ResetColor();
         }
 
-        private string GetSenderNameFromAddressBook(string phoneNumber)
+        private string GetSenderNameFromAddressBook(int phoneNumber)
         {
             return Addresses.FirstOrDefault(p => p.Key == phoneNumber).Value;
         }
 
-        private bool IsConnectionValid(string phoneNumber)
+        private bool IsConnectionValid(int phoneNumber)
         {
             return Addresses.ContainsKey(phoneNumber);
         }

@@ -8,13 +8,13 @@ namespace MobileProvider
 {
     class MakeMessagingEventArgs : EventArgs
     {
-        public MakeMessagingEventArgs(string message, string receiverNumber)
+        public MakeMessagingEventArgs(string message, int receiverNumber)
         {
             ReceiverNumber = receiverNumber;
             Message = message;
         }
 
-        public string ReceiverNumber { get; private set; }
+        public int ReceiverNumber { get; private set; }
 
         public string Message { get; private set; }
     }

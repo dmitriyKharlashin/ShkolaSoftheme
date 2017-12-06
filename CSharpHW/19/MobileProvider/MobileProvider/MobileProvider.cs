@@ -8,8 +8,8 @@ namespace MobileProvider
 {
     class Provider : IMobileProvider
     {
-        public event Action<int, string, string> DeliveringSmsAction;
-        public event Action<int, string, string> DeliveringCallAction;
+        public event Action<int, int, int> DeliveringSmsAction;
+        public event Action<int, int, int> DeliveringCallAction;
 
         private readonly List<IMobileAccount> _accounts = new List<IMobileAccount>();
 
@@ -41,44 +41,46 @@ namespace MobileProvider
             }
         }
 
-        public void AddAccount(string phoneNumber)
+        public void AddAccount(int phoneNumber)
         {
             MobileAccount mobileAccount = new MobileAccount(phoneNumber);
             AddAccount(mobileAccount);
         }
 
-        private void ProvideConnection(object s, MakeMessagingEventArgs e)
+        private void ProvideConnection(object sender, MakeMessagingEventArgs e)
         {
-            if (!(s is MobileAccount sender))
+            var account = sender as MobileAccount;
+            if (account == null)
             {
                 throw new ArgumentException();
             }
 
-            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(sender.Number));
+            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
             int messageStatus = (int)LoggerStatusTypes.Error;
             if (receiver != null)
             {
                 messageStatus = (int) LoggerStatusTypes.Success;
-                receiver.ReceiveSms(e.Message, sender.Number);
+                receiver.ReceiveSms(e.Message, account.Number);
             }
-            DeliveringSmsAction?.Invoke(messageStatus, sender.Number, e.ReceiverNumber);
+            DeliveringSmsAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
         }
 
-        private void ProvideConnection(object s, MakeCallEventArgs e)
+        private void ProvideConnection(object sender, MakeCallEventArgs e)
         {
-            if (!(s is MobileAccount sender))
+            var account = sender as MobileAccount;
+            if (account == null)
             {
                 throw new ArgumentException();
             }
 
-            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(sender.Number));
+            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
             int messageStatus = (int)LoggerStatusTypes.Error;
             if (receiver != null)
             {
                 messageStatus = (int) LoggerStatusTypes.Success;
-                receiver.ReceiveCall(sender.Number);
+                receiver.ReceiveCall(account.Number);
             }
-            DeliveringCallAction?.Invoke(messageStatus, sender.Number, e.ReceiverNumber);
+            DeliveringCallAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
         }
     }
 }

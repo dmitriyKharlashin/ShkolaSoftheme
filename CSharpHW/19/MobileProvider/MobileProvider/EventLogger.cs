@@ -4,48 +4,48 @@ namespace MobileProvider
 {
     public class EventLogger : ILogger
     {
-        public void AddMessageEvent(int status, string partisipant1, string partisipant2)
+        public void AddMessageEvent(int status, int sender, int reciever)
         {
             switch (status)
             {
                 case (int) LoggerStatusTypes.Success:
-                    ShowLog(status, PrepareSmsSuccessLog(partisipant1, partisipant2));
+                    ShowLog(status, PrepareSmsSuccessLog(sender, reciever));
                     break;
                 default:
-                    ShowLog(status, PrepareSmsErrorLog(partisipant1, partisipant2));
+                    ShowLog(status, PrepareSmsErrorLog(sender, reciever));
                     break;
             }
         }
 
-        public void AddCallEvent(int status, string partisipant1, string partisipant2)
+        public void AddCallEvent(int status, int sender, int partisipant2)
         {
             switch (status)
             {
                 case (int)LoggerStatusTypes.Success:
-                    ShowLog(status, PrepareCallSuccessLog(partisipant1, partisipant2));
+                    ShowLog(status, PrepareCallSuccessLog(sender, partisipant2));
                     break;
                 default:
-                    ShowLog(status, PrepareCallErrorLog(partisipant1, partisipant2));
+                    ShowLog(status, PrepareCallErrorLog(sender, partisipant2));
                     break;
             }
         }
 
-        private string PrepareSmsSuccessLog(string partisipant1, string partisipant2)
+        private string PrepareSmsSuccessLog(int partisipant1, int partisipant2)
         {
             return $"Message: from {partisipant1} to {partisipant2} was successfully sent";
         }
 
-        private string PrepareCallSuccessLog(string partisipant1, string partisipant2)
+        private string PrepareCallSuccessLog(int partisipant1, int partisipant2)
         {
             return $"Call: from {partisipant1} to {partisipant2} was successfully started";
         }
 
-        private string PrepareSmsErrorLog(string partisipant1, string partisipant2)
+        private string PrepareSmsErrorLog(int partisipant1, int partisipant2)
         {
             return $"Message: from {partisipant1} to {partisipant2} was not delivered!";
         }
 
-        private string PrepareCallErrorLog(string partisipant1, string partisipant2)
+        private string PrepareCallErrorLog(int partisipant1, int partisipant2)
         {
             return $"Call: from {partisipant1} to {partisipant2} was not started!";
         }

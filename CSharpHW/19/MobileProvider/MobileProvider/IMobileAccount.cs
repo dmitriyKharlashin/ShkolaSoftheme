@@ -11,18 +11,18 @@ namespace MobileProvider
         event EventHandler<MakeMessagingEventArgs> SendSmsProcessingComplete;
         event EventHandler<MakeCallEventArgs> MakeCallProcessingStart;
 
-        string Number { get; }
+        int Number { get; }
 
-        void AddAddress(string number, string name);
+        void AddAddress(int number, string name);
 
-        void AddAddress(Dictionary<string, string> args);
+        void AddAddress(Dictionary<int, string> args);
             
-        void ReceiveSms(string message, string sender);
+        void ReceiveSms(string message, int sender);
 
-        void SendSms(string message, string receiver);
+        void SendSms(string message, int receiver);
 
-        void MakeACall(string receiver);
+        void MakeACall(int receiver);
 
-        void ReceiveCall(string caller);
+        void ReceiveCall(int caller);
     }
 }

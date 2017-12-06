@@ -8,8 +8,8 @@ namespace MobileProvider
 {
     internal interface IMobileProvider
     {
-        event Action<int, string, string> DeliveringSmsAction;
-        event Action<int, string, string> DeliveringCallAction;
+        event Action<int, int, int> DeliveringSmsAction;
+        event Action<int, int, int> DeliveringCallAction;
 
         string Name { get; set; }
 
@@ -17,6 +17,6 @@ namespace MobileProvider
 
         void AddAccount(IMobileAccount account);
 
-        void AddAccount(string mobile);
+        void AddAccount(int mobile);
     }
 }
