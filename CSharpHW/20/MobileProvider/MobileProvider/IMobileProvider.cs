@@ -8,8 +8,8 @@ namespace MobileProvider
 {
     internal interface IMobileProvider
     {
-        event Action<int, int, int> DeliveringSmsAction;
-        event Action<int, int, int> DeliveringCallAction;
+        event Action<LoggerStatusTypes, int, int> DeliveringSmsAction;
+        event Action<LoggerStatusTypes, int, int> DeliveringCallAction;
 
         string Name { get; set; }
 

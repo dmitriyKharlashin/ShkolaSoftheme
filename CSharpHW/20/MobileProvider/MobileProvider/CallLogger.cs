@@ -13,12 +13,12 @@ namespace MobileProvider
             get { return _eventsList; }
         }
 
-        public void AddCallEvent(int status, int sender, int reciever)
+        public void AddCallEvent(LoggerStatusTypes status, int sender, int reciever)
         {
             EventsList?.Add(new CallLog(status, sender, reciever, ConnectionTypes.Call));
         }
 
-        public void AddMessageEvent(int status, int sender, int reciever)
+        public void AddMessageEvent(LoggerStatusTypes status, int sender, int reciever)
         {
             EventsList?.Add(new CallLog(status, sender, reciever, ConnectionTypes.Message));
         }

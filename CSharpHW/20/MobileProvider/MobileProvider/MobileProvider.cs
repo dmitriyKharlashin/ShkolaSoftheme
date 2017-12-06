@@ -8,8 +8,8 @@ namespace MobileProvider
 {
     class Provider : IMobileProvider
     {
-        public event Action<int, int, int> DeliveringSmsAction;
-        public event Action<int, int, int> DeliveringCallAction;
+        public event Action<LoggerStatusTypes, int, int> DeliveringSmsAction;
+        public event Action<LoggerStatusTypes, int, int> DeliveringCallAction;
 
         private readonly List<IMobileAccount> _accounts = new List<IMobileAccount>();
 
@@ -50,10 +50,10 @@ namespace MobileProvider
             }
 
             IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(sender.Number));
-            int messageStatus = (int)LoggerStatusTypes.Error;
+            LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
             if (receiver != null)
             {
-                messageStatus = (int) LoggerStatusTypes.Success;
+                messageStatus = LoggerStatusTypes.Success;
                 receiver.ReceiveSms(e.Message, sender.Number);
             }
             DeliveringSmsAction?.Invoke(messageStatus, sender.Number, e.ReceiverNumber);
@@ -67,10 +67,10 @@ namespace MobileProvider
             }
 
             IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(sender.Number));
-            int messageStatus = (int)LoggerStatusTypes.Error;
+            LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
             if (receiver != null)
             {
-                messageStatus = (int) LoggerStatusTypes.Success;
+                messageStatus = LoggerStatusTypes.Success;
                 receiver.ReceiveCall(sender.Number);
             }
             DeliveringCallAction?.Invoke(messageStatus, sender.Number, e.ReceiverNumber);

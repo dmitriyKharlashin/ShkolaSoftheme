@@ -8,7 +8,7 @@ namespace MobileProvider
 {
     public class CallLog
     {
-        public int Status { get; }
+        public LoggerStatusTypes Status { get; }
 
         public ConnectionTypes ConnectionType { get; }
 
@@ -16,7 +16,7 @@ namespace MobileProvider
 
         public int Reciever { get; }
 
-        public CallLog(int status, int sender, int reciever, ConnectionTypes connection_type)
+        public CallLog(LoggerStatusTypes status, int sender, int reciever, ConnectionTypes connection_type)
         {
             Status = status;
             Sender = sender;
