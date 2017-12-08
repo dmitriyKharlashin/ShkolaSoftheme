@@ -9,8 +9,8 @@ namespace MobileProvider
 {
     class MobileAccount : IMobileAccount, IValidatableObject
     {
-        public event EventHandler<MakeMessagingEventArgs> SendSmsProcessingComplete;
-        public event EventHandler<MakeCallEventArgs> MakeCallProcessingStart;
+        public event EventHandler<ConnectionEventArgs> SendSmsProcessing;
+        public event EventHandler<ConnectionEventArgs> MakeCallProcessing;
 
         private readonly Dictionary<int, string> _addresses = new Dictionary<int, string>();
 
@@ -18,17 +18,19 @@ namespace MobileProvider
         public int Number { get; set; }
 
         //[StringLength(255, MinimumLength = 5)]
-        public string Name { get; }
+        public string Name { get; protected set; }
 
         //[StringLength(255, MinimumLength = 5)]
-        public string Surname { get; }
+        public string Surname { get; protected set; }
 
         //[EmailAddress]
-        public string Email { get; }
+        public string Email { get; protected set; }
 
         //[StringLength(2 | 4)]
         //[Range(1930, 1999)]
-        public int BirthYear { get; }
+        public int BirthYear { get; protected set; }
+
+        public UserRoles Role { get; protected set; }
 
         protected Dictionary<int, string> Addresses
         {
@@ -41,6 +43,7 @@ namespace MobileProvider
             Surname = surname;
             Email = email;
             BirthYear = birthYear;
+            Role = UserRoles.User;
         }
 
         public void AddAddress(int number, string name)
@@ -58,7 +61,7 @@ namespace MobileProvider
 
         public void SendSms(string message, int receiver)
         {
-            SendSmsProcessingComplete?.Invoke(this, new MakeMessagingEventArgs(message, receiver));
+            SendSmsProcessing?.Invoke(this, new ConnectionEventArgs(message, receiver));
         }
 
         public void ReceiveSms(string message, int sender)
@@ -79,7 +82,7 @@ namespace MobileProvider
 
         public void MakeACall(int receiver)
         {
-            MakeCallProcessingStart?.Invoke(this, new MakeCallEventArgs(receiver));
+            MakeCallProcessing?.Invoke(this, new ConnectionEventArgs(receiver));
         }
 
         public void ReceiveCall(int caller)
@@ -113,19 +116,31 @@ namespace MobileProvider
             List<ValidationResult> errors = new List<ValidationResult>();
 
             if (string.IsNullOrWhiteSpace(this.Name))
+            {
                 errors.Add(new ValidationResult("Name is required"));
+            }
 
             if (string.IsNullOrWhiteSpace(this.Surname))
+            {
                 errors.Add(new ValidationResult("Surname is required"));
+            }
 
-            if (this?.Name?.Length < 5 && this?.Name?.Length > 255)
-                errors.Add(new ValidationResult($"Name: {this.Name}. Name should have letters between 5 and 255"));
+            if ((this?.Name?.Length < 5 && this?.Name?.Length > 255) ||
+                !Regex.IsMatch(this?.Name, "^[a-zA-Z-]*$"))
+            {
+                errors.Add(new ValidationResult($"Name: {this.Name}. Name has not valid format: length - from 5 to 255, symbols - alphabetic letters and dash"));
+            }
 
-            if (this?.Surname?.Length < 5 && this?.Surname?.Length > 255)
-                errors.Add(new ValidationResult($"Surname: {this.Surname}. Surname should have letters between 5 and 255"));
+            if ((this?.Surname?.Length < 5 && this?.Surname?.Length > 255) ||
+                !Regex.IsMatch(this?.Surname, "^[a-zA-Z-]*$"))
+            {
+                errors.Add(new ValidationResult($"Surname: {this.Surname}. Surname has not valid format: length - from 5 to 255, symbols - alphabetic letters and dash"));
+            }
 
             if (this?.BirthYear < 1930 || this?.BirthYear > 2017)
-                errors.Add(new ValidationResult($"Birth year: {this.BirthYear}. Birth year is not valid"));
+            {
+                errors.Add(new ValidationResult($"Birth year: {this.BirthYear}. Birth year  has not valid format: from 1930 to 2017"));
+            }
 
             if (!string.IsNullOrWhiteSpace(this.Email) && !Regex.IsMatch(this.Email, "^[_a-z0-9-]+(.[a-z0-9-]+)@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$"))
             {

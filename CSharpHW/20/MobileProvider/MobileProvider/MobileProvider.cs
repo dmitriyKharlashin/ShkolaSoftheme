@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,15 +38,16 @@ namespace MobileProvider
                 account.Number = GeneratePhoneNumber();
                 Accounts.Add(account);
 
-                account.SendSmsProcessingComplete += ProvideConnection;
-                account.MakeCallProcessingStart += ProvideConnection;
+                account.SendSmsProcessing += ProvideMessageConnection;
+                account.MakeCallProcessing += ProvideCallConnection;
             //}
         }
 
-        private void ProvideConnection(object sender, MakeMessagingEventArgs e)
+        [AdminValidation]
+        private void ProvideMessageConnection(object sender, ConnectionEventArgs e)
         {
             var account = sender as MobileAccount;
-            if (account != null)
+            if (account != null && !e.ReceiverNumber.Equals(null))
             {
                 IMobileAccount receiver = Accounts.FirstOrDefault(p =>
                     p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
@@ -57,6 +59,15 @@ namespace MobileProvider
                 }
                 DeliveringSmsAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
             }
+            else if (account != null && e.ReceiverNumber.Equals(null) && Validator.TryValidateObject(sender, new ValidationContext(sender), new List<ValidationResult>()))
+            {
+                foreach (var mobileAccount in Accounts)
+                {
+                    LoggerStatusTypes messageStatus = LoggerStatusTypes.Success;
+                    mobileAccount.ReceiveSms(e.Message, account.Number);
+                    DeliveringSmsAction?.Invoke(messageStatus, account.Number, mobileAccount.Number);
+                }
+            }
             else
             {
                 Console.ForegroundColor = (ConsoleColor) LoggerColorTypes.Alert;
@@ -67,10 +78,10 @@ namespace MobileProvider
             
         }
 
-        private void ProvideConnection(object sender, MakeCallEventArgs e)
+        private void ProvideCallConnection(object sender, ConnectionEventArgs e)
         {
             var account = sender as MobileAccount;
-            if (account != null)
+            if (account != null && !e.ReceiverNumber.Equals(null))
             {
                 IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
                 LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;

@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminAccount.cs" />
+    <Compile Include="AdminValidationAttribute.cs" />
     <Compile Include="CallLog.cs" />
     <Compile Include="CallLogger.cs" />
     <Compile Include="ConnectionTypes.cs" />
@@ -52,12 +54,12 @@
     <Compile Include="IMobileProvider.cs" />
     <Compile Include="LoggerColorTypes.cs" />
     <Compile Include="LoggerStatusTypes.cs" />
-    <Compile Include="MakeCallEventArgs.cs" />
-    <Compile Include="MakeMessagingEventArgs.cs" />
+    <Compile Include="ConnectionEventArgs.cs" />
     <Compile Include="MobileAccount.cs" />
     <Compile Include="MobileProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserRoles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

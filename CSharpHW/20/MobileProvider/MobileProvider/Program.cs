@@ -35,22 +35,23 @@ namespace MobileProvider
             if (Validate(mobileAccount1, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount1);
-                Console.WriteLine(mobileAccount1);
             }
+            Console.WriteLine(mobileAccount1);
+            Console.WriteLine();
 
             MobileAccount mobileAccount2 = new MobileAccount
             (
-                name: "a",
+                name: "",
                 surname: "Smith",
                 birthYear: 1970,
                 email: "hhh"
             );
-            
+
             if (Validate(mobileAccount2, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount2);
-                Console.WriteLine(mobileAccount2);
             }
+            Console.WriteLine(mobileAccount2);
             Console.WriteLine();
 
             MobileAccount mobileAccount3 = new MobileAccount
@@ -64,8 +65,8 @@ namespace MobileProvider
             if (Validate(mobileAccount3, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount3);
-                Console.WriteLine(mobileAccount3);
             }
+            Console.WriteLine(mobileAccount3);
             Console.WriteLine();
 
             MobileAccount mobileAccount4 = new MobileAccount
@@ -79,8 +80,8 @@ namespace MobileProvider
             if (Validate(mobileAccount4, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount4);
-                Console.WriteLine(mobileAccount4);
             }
+            Console.WriteLine(mobileAccount4);
             Console.WriteLine();
 
             MobileAccount mobileAccount5 = new MobileAccount
@@ -94,10 +95,74 @@ namespace MobileProvider
             if (Validate(mobileAccount5, mobileProviderVodaphone))
             {
                 mobileProviderVodaphone.AddAccount(mobileAccount5);
-                Console.WriteLine(mobileAccount5);
             }
+            Console.WriteLine(mobileAccount5);
             Console.WriteLine();
 
+            AdminAccount adminAccount = new AdminAccount
+            (
+                name: "Adrian",
+                surname: "Smith",
+                birthYear: 1984,
+                email: "ssasccdd@dkkdk.co.uk"
+            );
+            if (Validate(adminAccount, mobileProviderVodaphone))
+            {
+                Console.WriteLine("Admin is valid");
+                mobileProviderVodaphone.AddAccount(adminAccount);
+            }
+            Console.WriteLine(adminAccount);
+            Console.WriteLine();
+
+            MobileAccount mobileAccount6 = new MobileAccount
+            (
+                name: "Zack",
+                surname: "Manninger",
+                birthYear: 1934,
+                email: "mannn@dkkdk.com"
+            );
+            if (Validate(mobileAccount6, mobileProviderVodaphone))
+            {
+                mobileProviderVodaphone.AddAccount(mobileAccount6);
+            }
+            Console.WriteLine(mobileAccount6);
+            Console.WriteLine();
+
+            mobileAccount1?.AddAddress(new Dictionary<int, string>(){
+                {0951000004, "Allain"},
+                {0951000003, "Edgar"},
+                {0951000002, "Milan"},
+            });
+            mobileAccount2?.AddAddress(0951000001, "Albert");
+            mobileAccount3?.AddAddress(new Dictionary<int, string>(){
+                {0951000002, "Marge"},
+                {0951000001, "Vins"},
+                {0951000003, "Robert"},
+            });
+
+            mobileAccount1?.SendSms("Hello World", 0951000002);
+            mobileAccount1?.SendSms("Hello World", 0951000003);
+            mobileAccount1?.MakeACall(0951000002);
+            mobileAccount1?.MakeACall(0951000003);
+
+            Console.WriteLine();
+            // change mobile account
+            mobileAccount2?.SendSms("Hello Another World", 0951000004);
+            mobileAccount2?.SendSms("Connect World", 0951000003);
+
+            mobileAccount2?.MakeACall(0951000001);
+            mobileAccount2?.MakeACall(0951000003);
+            mobileAccount2?.MakeACall(0951000004);
+
+            mobileAccount3?.MakeACall(0951000001);
+            mobileAccount3?.MakeACall(0951000002);
+            mobileAccount3?.MakeACall(0951000004);
+            mobileAccount3?.SendSms("Hello World", 0951000002);
+            mobileAccount3?.SendSms("Hello World", 0951000004);
+            mobileAccount3?.MakeACall(0951000002);
+            mobileAccount3?.MakeACall(0951000004);
+
+            adminAccount.SendMessageToAll("Admin message!!!");
         }
 
         static bool Validate(IMobileAccount mobileAccount, IMobileProvider mobileProvider)

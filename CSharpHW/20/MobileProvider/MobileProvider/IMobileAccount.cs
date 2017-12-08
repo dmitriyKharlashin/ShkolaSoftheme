@@ -8,8 +8,8 @@ namespace MobileProvider
 {
     interface IMobileAccount
     {
-        event EventHandler<MakeMessagingEventArgs> SendSmsProcessingComplete;
-        event EventHandler<MakeCallEventArgs> MakeCallProcessingStart;
+        event EventHandler<ConnectionEventArgs> SendSmsProcessing;
+        event EventHandler<ConnectionEventArgs> MakeCallProcessing;
 
         int Number { get; set; }
 
