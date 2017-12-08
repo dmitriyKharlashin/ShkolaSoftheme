@@ -45,44 +45,55 @@ namespace MobileProvider
         private void ProvideConnection(object sender, MakeMessagingEventArgs e)
         {
             var account = sender as MobileAccount;
-            if (account == null)
+            if (account != null)
             {
-                throw new ArgumentException();
+                IMobileAccount receiver = Accounts.FirstOrDefault(p =>
+                    p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
+                LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
+                if (receiver != null)
+                {
+                    messageStatus = LoggerStatusTypes.Success;
+                    receiver.ReceiveSms(e.Message, account.Number);
+                }
+                DeliveringSmsAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
+            }
+            else
+            {
+                Console.ForegroundColor = (ConsoleColor) LoggerColorTypes.Alert;
+                Console.WriteLine("Your account can`t connect with the recipient");
+                Console.ResetColor();
             }
 
-            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
-            LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
-            if (receiver != null)
-            {
-                messageStatus = LoggerStatusTypes.Success;
-                receiver.ReceiveSms(e.Message, account.Number);
-            }
-            DeliveringSmsAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
+            
         }
 
         private void ProvideConnection(object sender, MakeCallEventArgs e)
         {
             var account = sender as MobileAccount;
-            if (account == null)
+            if (account != null)
             {
-                throw new ArgumentException();
+                IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
+                LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
+                if (receiver != null)
+                {
+                    messageStatus = LoggerStatusTypes.Success;
+                    receiver.ReceiveCall(account.Number);
+                }
+                DeliveringCallAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
             }
-
-            IMobileAccount receiver = Accounts.FirstOrDefault(p => p.Number.Equals(e.ReceiverNumber) && !p.Number.Equals(account.Number));
-            LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
-            if (receiver != null)
+            else
             {
-                messageStatus = LoggerStatusTypes.Success;
-                receiver.ReceiveCall(account.Number);
+                Console.ForegroundColor = (ConsoleColor)LoggerColorTypes.Alert;
+                Console.WriteLine("Your account can`t connect with the recipient");
+                Console.ResetColor();
             }
-            DeliveringCallAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
         }
 
         private int GeneratePhoneNumber()
         {
             IMobileAccount lastAccount = Accounts.LastOrDefault();
             int? number = lastAccount?.Number;
-            return number + 1 ?? 1;
+            return number + 1 ?? 0951000001;
         }
     }
 }

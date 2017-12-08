@@ -30,7 +30,7 @@ namespace MobileProvider
         //[Range(1930, 1999)]
         public int BirthYear { get; }
 
-        private Dictionary<int, string> Addresses
+        protected Dictionary<int, string> Addresses
         {
             get { return _addresses; }
         }
@@ -98,12 +98,12 @@ namespace MobileProvider
             Console.ResetColor();
         }
 
-        private string GetSenderNameFromAddressBook(int phoneNumber)
+        protected string GetSenderNameFromAddressBook(int phoneNumber)
         {
             return Addresses.FirstOrDefault(p => p.Key == phoneNumber).Value;
         }
 
-        private bool IsConnectionValid(int phoneNumber)
+        protected bool IsConnectionValid(int phoneNumber)
         {
             return Addresses.ContainsKey(phoneNumber);
         }
