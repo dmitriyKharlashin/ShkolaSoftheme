@@ -128,39 +128,39 @@ namespace MobileProvider
             Console.WriteLine(mobileAccount6);
             Console.WriteLine();
 
-            mobileAccount1?.AddAddress(new Dictionary<int, string>(){
+            mobileAccount3?.AddAddress(new Dictionary<int, string>(){
                 {0951000004, "Allain"},
                 {0951000003, "Edgar"},
                 {0951000002, "Milan"},
             });
-            mobileAccount2?.AddAddress(0951000001, "Albert");
-            mobileAccount3?.AddAddress(new Dictionary<int, string>(){
+            mobileAccount4?.AddAddress(0951000001, "Albert");
+            mobileAccount5?.AddAddress(new Dictionary<int, string>(){
                 {0951000002, "Marge"},
                 {0951000001, "Vins"},
                 {0951000003, "Robert"},
             });
 
-            mobileAccount1?.SendSms("Hello World", 0951000002);
-            mobileAccount1?.SendSms("Hello World", 0951000003);
-            mobileAccount1?.MakeACall(0951000002);
-            mobileAccount1?.MakeACall(0951000003);
+            mobileAccount3?.SendSms("Hello World", 0951000002);
+            mobileAccount3?.SendSms("Hello World", 0951000003);
+            mobileAccount3?.MakeACall(0951000002);
+            mobileAccount3?.MakeACall(0951000003);
 
             Console.WriteLine();
             // change mobile account
-            mobileAccount2?.SendSms("Hello Another World", 0951000004);
-            mobileAccount2?.SendSms("Connect World", 0951000003);
+            mobileAccount4?.SendSms("Hello Another World", 0951000004);
+            mobileAccount4?.SendSms("Connect World", 0951000003);
 
-            mobileAccount2?.MakeACall(0951000001);
-            mobileAccount2?.MakeACall(0951000003);
-            mobileAccount2?.MakeACall(0951000004);
+            mobileAccount5?.MakeACall(0951000001);
+            mobileAccount5?.MakeACall(0951000003);
+            mobileAccount5?.MakeACall(0951000004);
 
-            mobileAccount3?.MakeACall(0951000001);
-            mobileAccount3?.MakeACall(0951000002);
-            mobileAccount3?.MakeACall(0951000004);
-            mobileAccount3?.SendSms("Hello World", 0951000002);
-            mobileAccount3?.SendSms("Hello World", 0951000004);
-            mobileAccount3?.MakeACall(0951000002);
-            mobileAccount3?.MakeACall(0951000004);
+            mobileAccount6?.MakeACall(0951000001);
+            mobileAccount6?.MakeACall(0951000002);
+            mobileAccount6?.MakeACall(0951000004);
+            mobileAccount6?.SendSms("Hello World", 0951000002);
+            mobileAccount6?.SendSms("Hello World", 0951000004);
+            mobileAccount6?.MakeACall(0951000002);
+            mobileAccount6?.MakeACall(0951000004);
 
             adminAccount.SendMessageToAll("Admin message!!!");
         }
