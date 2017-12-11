@@ -10,18 +10,18 @@ namespace MobileProvider
     {
         public LoggerStatusTypes Status { get; }
 
-        public ConnectionTypes ConnectionType { get; }
+        public ActivityTypes ActivityType { get; }
 
         public int Sender { get; }
 
         public int Reciever { get; }
 
-        public CallLog(LoggerStatusTypes status, int sender, int reciever, ConnectionTypes connection_type)
+        public CallLog(LoggerStatusTypes status, int sender, int reciever, ActivityTypes activity_type)
         {
             Status = status;
             Sender = sender;
             Reciever = reciever;
-            ConnectionType = connection_type;
+            ActivityType = activity_type;
         }
     }
 }

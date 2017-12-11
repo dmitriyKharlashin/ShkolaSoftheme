@@ -30,8 +30,6 @@ namespace MobileProvider
         //[Range(1930, 1999)]
         public int BirthYear { get; protected set; }
 
-        public UserRoles Role { get; protected set; }
-
         protected Dictionary<int, string> Addresses
         {
             get { return _addresses; }
@@ -43,7 +41,6 @@ namespace MobileProvider
             Surname = surname;
             Email = email;
             BirthYear = birthYear;
-            Role = UserRoles.User;
         }
 
         public void AddAddress(int number, string name)

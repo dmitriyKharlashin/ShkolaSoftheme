@@ -15,12 +15,12 @@ namespace MobileProvider
 
         public void AddCallEvent(LoggerStatusTypes status, int sender, int reciever)
         {
-            EventsList?.Add(new CallLog(status, sender, reciever, ConnectionTypes.Call));
+            EventsList?.Add(new CallLog(status, sender, reciever, ActivityTypes.Call));
         }
 
         public void AddMessageEvent(LoggerStatusTypes status, int sender, int reciever)
         {
-            EventsList?.Add(new CallLog(status, sender, reciever, ConnectionTypes.Message));
+            EventsList?.Add(new CallLog(status, sender, reciever, ActivityTypes.Message));
         }
 
         public void ShowTopSenderList()
@@ -32,7 +32,7 @@ namespace MobileProvider
         {
             var topList = EventsList
                 .GroupBy(p => p.Sender)
-                .Select(g => new { Sender = g.Key, Events = g.Select(p => p), Sum = g.Sum(p => p.ConnectionType == ConnectionTypes.Call ? 1 : 0.5) })
+                .Select(g => new { Sender = g.Key, Events = g.Select(p => p), Sum = g.Sum(p => p.ActivityType == ActivityTypes.Call ? 1 : 0.5) })
                 .OrderByDescending(g => g.Sum)
                 .Take(limit)
                 .ToArray();
@@ -54,7 +54,7 @@ namespace MobileProvider
         {
             var topList = EventsList
                 .GroupBy(p => p.Reciever)
-                .Select(g => new { Reciever = g.Key, Sum = g.Sum(p => p.ConnectionType == ConnectionTypes.Call ? 1 : 0.5) })
+                .Select(g => new { Reciever = g.Key, Sum = g.Sum(p => p.ActivityType == ActivityTypes.Call ? 1 : 0.5) })
                 .OrderByDescending(g => g.Sum)
                 .Take(limit)
                 .ToArray();

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace MobileProvider
 {
@@ -33,6 +34,7 @@ namespace MobileProvider
 
         public void AddAccount(IMobileAccount account)
         {
+            var isAdmin = account.GetType().IsDefined(typeof(AdminValidationAttribute), false);
             //if (!IsNumberServiced(account))
             //{
                 account.Number = GeneratePhoneNumber();
@@ -40,10 +42,38 @@ namespace MobileProvider
 
                 account.SendSmsProcessing += ProvideMessageConnection;
                 account.MakeCallProcessing += ProvideCallConnection;
+                if (isAdmin)
+                {
+                    AdminAccount adminAccount = account as AdminAccount;
+                    if (adminAccount != null) adminAccount.SendSmsToAll += ProvideAdminNotifications;
+                }
+
             //}
         }
 
-        [AdminValidation]
+        private void ProvideAdminNotifications(object sender, ConnectionEventArgs e)
+        {
+            var account = sender as AdminAccount;
+            if (account != null)
+            {
+                IEnumerable<IMobileAccount> receivers = Accounts.Where(p => !p.Number.Equals(account.Number));
+
+                foreach (var receiver in receivers)
+                {
+                    LoggerStatusTypes messageStatus = LoggerStatusTypes.Error;
+                    messageStatus = LoggerStatusTypes.Success;
+                    receiver.ReceiveSms(e.Message, account.Number);
+                    DeliveringSmsAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
+                }
+            }
+            else
+            {
+                Console.ForegroundColor = (ConsoleColor)LoggerColorTypes.Alert;
+                Console.WriteLine("Your account can`t connect with the recipient");
+                Console.ResetColor();
+            }
+        }
+
         private void ProvideMessageConnection(object sender, ConnectionEventArgs e)
         {
             var account = sender as MobileAccount;
@@ -58,15 +88,6 @@ namespace MobileProvider
                     receiver.ReceiveSms(e.Message, account.Number);
                 }
                 DeliveringSmsAction?.Invoke(messageStatus, account.Number, e.ReceiverNumber);
-            }
-            else if (account != null && e.ReceiverNumber.Equals(null) && Validator.TryValidateObject(sender, new ValidationContext(sender), new List<ValidationResult>()))
-            {
-                foreach (var mobileAccount in Accounts)
-                {
-                    LoggerStatusTypes messageStatus = LoggerStatusTypes.Success;
-                    mobileAccount.ReceiveSms(e.Message, account.Number);
-                    DeliveringSmsAction?.Invoke(messageStatus, account.Number, mobileAccount.Number);
-                }
             }
             else
             {

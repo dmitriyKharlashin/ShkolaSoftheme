@@ -9,16 +9,16 @@ namespace MobileProvider
     [AdminValidation]
     class AdminAccount : MobileAccount
     {
-        public event EventHandler<ConnectionEventArgs> SendSmsProcessing;
+        public event EventHandler<ConnectionEventArgs> SendSmsToAll;
 
         public AdminAccount(string name, string surname, string email, int birthYear) : base(name, surname, email, birthYear)
         {
-            Role = UserRoles.Admin;
+
         }
 
         public void SendMessageToAll(string message)
         {
-            SendSmsProcessing?.Invoke(this, new ConnectionEventArgs(message));
+            SendSmsToAll?.Invoke(this, new ConnectionEventArgs(message));
         }
         
     }

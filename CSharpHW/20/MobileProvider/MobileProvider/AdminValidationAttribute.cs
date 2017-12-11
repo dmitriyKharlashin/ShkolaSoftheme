@@ -1,18 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
 
 namespace MobileProvider
 {
-    public class AdminValidationAttribute : ValidationAttribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public class AdminValidationAttribute : Attribute
     {
-        public override bool IsValid(object value)
-        {
-            var account = value as MobileAccount;
-            if (account.Role == UserRoles.Admin)
-            {
-                return true;
-            }
-
-            return false;
-        }
     }
 }
