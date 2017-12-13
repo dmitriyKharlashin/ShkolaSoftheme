@@ -170,7 +170,7 @@ namespace MobileProvider
             //Stopwatch timeSpanSoap = new Stopwatch();
             //timeSpanSoap.Restart();
             //SoapParser soapParser = new SoapParser();
-            //soapParser.ParseIntoFile<List<MobileAccountDO>>("accounts.xml", accounts);
+            //soapParser.ParseIntoFile<List<MobileAccountDO>>("accounts.soap", accounts);
             //timeSpanSoap.Stop();
             //Console.WriteLine($"Soap serialization - {timeSpanSoap.ElapsedMilliseconds}");
 
@@ -182,24 +182,5 @@ namespace MobileProvider
             Console.WriteLine($"ProtoBuf serialization - {timeSpanProto.ElapsedMilliseconds}");
         }
 
-    }
-
-    [Serializable]
-    public class Person
-    {
-        public string Name;
-
-        public int Age;
-
-        public Person()
-        {
-
-        }
-
-        public Person(string name, int age)
-        {
-            Name = name;
-            Age = age;
-        }
     }
 }
