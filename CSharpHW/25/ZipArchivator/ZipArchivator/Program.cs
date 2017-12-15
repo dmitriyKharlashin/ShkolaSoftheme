@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -22,8 +23,11 @@ namespace ZipArchivator
                 {
                     break;
                 }
-
+                
+                Stopwatch watch = new Stopwatch();
+                watch.Restart();
                 Compress(folderAddress);
+                Console.WriteLine(watch.ElapsedMilliseconds);
 
                 //Decompress(folderAddress);
             }
@@ -47,12 +51,33 @@ namespace ZipArchivator
 
                 if (files.Length > 0)
                 {
+                    // simple compression
+                    //CompressFile(files);
 
-                    //CompressFile(file);
+                    // compress with simple threading
                     Thread thread = new Thread(new ParameterizedThreadStart(CompressFile));
                     thread.Start(files);
+
+                    // compress with thread pool
+                    //CompressWithThreadPool(files);
                 }
             }
+        }
+
+        static void CompressWithThreadPool(string[] threadData)
+        {
+            int workerItems = Math.Min(GetCoreCount() * 2, threadData.Length);
+
+            ManualResetEvent[] doneEvents = new ManualResetEvent[workerItems];
+
+            for (int i = 0; i < workerItems; i++)
+            {
+                doneEvents[i] = new ManualResetEvent(false);
+
+                ThreadPool.QueueUserWorkItem(CompressFile, threadData);
+            }
+
+            WaitHandle.WaitAll(doneEvents.Where(p => p != null)?.ToArray());
         }
 
         static void CompressFile(string file)
@@ -60,7 +85,7 @@ namespace ZipArchivator
             if (file == String.Empty)
                 return;
 
-            using (ZipArchive compressStream = ZipFile.Open($"{file}.zip", ZipArchiveMode.Create))
+            using (ZipArchive compressStream = ZipFile.Open($"{file}.zip", ZipArchiveMode.Update))
             {
                 FileInfo fileInfo = new FileInfo(file);
                 ZipArchiveEntry currentEntry = compressStream.CreateEntryFromFile(file, fileInfo.Name);
@@ -79,6 +104,18 @@ namespace ZipArchivator
                     CompressFile(file);
                 }
             }
+        }
+
+        static int GetCoreCount()
+        {
+            int coreCount = 0;
+
+            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
+            {
+                coreCount += int.Parse(item["NumberOfCores"].ToString());
+            }
+
+            return coreCount;
         }
     }
 }
