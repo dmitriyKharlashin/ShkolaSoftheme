@@ -12,10 +12,18 @@ namespace ZipArchivator
 {
     class Program
     {
+        static readonly int maxThreadCount = GetCoreCount() * 2;
+        private static long threadCount = 0;
+        private static EventWaitHandle eventWaitHandle;
+        private static EventWaitHandle clearCount = new EventWaitHandle(false, EventResetMode.AutoReset);
+        static object locker = new object();
+
         static void Main(string[] args)
         {
             while (true)
             {
+                //eventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+
                 Console.WriteLine("Enter the folder address to compress it (to exit enter: \"-q\"):");
                 string folderAddress = $@"{Console.ReadLine()}";
 
@@ -23,13 +31,20 @@ namespace ZipArchivator
                 {
                     break;
                 }
-                
+
                 Stopwatch watch = new Stopwatch();
                 watch.Restart();
-                Compress(folderAddress);
-                Console.WriteLine(watch.ElapsedMilliseconds);
 
-                //Decompress(folderAddress);
+                lock (locker)
+                {
+                    Compress(folderAddress);
+                }
+
+                //while (Interlocked.Read(ref threadCount) > 0)
+                //{
+                //    WaitHandle.SignalAndWait(eventWaitHandle, clearCount);
+                //}
+                Console.WriteLine(watch.ElapsedMilliseconds);
             }
         }
 
@@ -55,37 +70,27 @@ namespace ZipArchivator
                     //CompressFile(files);
 
                     // compress with simple threading
-                    Thread thread = new Thread(new ParameterizedThreadStart(CompressFile));
-                    thread.Start(files);
+                    //Thread thread = new Thread(new ParameterizedThreadStart(CompressFile));
+                    //thread.Start(files);
 
                     // compress with thread pool
-                    //CompressWithThreadPool(files);
+                    CompressWithThreadPool(files);
                 }
             }
         }
 
         static void CompressWithThreadPool(string[] threadData)
         {
-            int workerItems = Math.Min(GetCoreCount() * 2, threadData.Length);
+            ThreadPool.QueueUserWorkItem(CompressFile, threadData);
 
-            ManualResetEvent[] doneEvents = new ManualResetEvent[workerItems];
-
-            for (int i = 0; i < workerItems; i++)
-            {
-                doneEvents[i] = new ManualResetEvent(false);
-
-                ThreadPool.QueueUserWorkItem(CompressFile, threadData);
-            }
-
-            WaitHandle.WaitAll(doneEvents.Where(p => p != null)?.ToArray());
         }
 
         static void CompressFile(string file)
         {
-            if (file == String.Empty)
+            if (file == String.Empty || File.Exists($"{file}.zip"))
                 return;
 
-            using (ZipArchive compressStream = ZipFile.Open($"{file}.zip", ZipArchiveMode.Update))
+            using (ZipArchive compressStream = ZipFile.Open($"{file}.zip", ZipArchiveMode.Create))
             {
                 FileInfo fileInfo = new FileInfo(file);
                 ZipArchiveEntry currentEntry = compressStream.CreateEntryFromFile(file, fileInfo.Name);
@@ -99,10 +104,16 @@ namespace ZipArchivator
         {
             if (!threadData.Equals(null))
             {
+                //Interlocked.Increment(ref threadCount);
+                //eventWaitHandle.WaitOne();
+
                 foreach (string file in (string[])threadData)
                 {
                     CompressFile(file);
                 }
+
+                //Interlocked.Decrement(ref threadCount);
+                //clearCount.Set();
             }
         }
 
