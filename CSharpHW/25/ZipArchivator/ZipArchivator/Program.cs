@@ -58,6 +58,7 @@ namespace ZipArchivator
                 if (!directory.Exists)
                 {
                     Console.WriteLine("Directory was not found, please enter the correct address!");
+                    break;
                 }
 
                 FileInfo[] files = directory.GetFiles("*", SearchOption.AllDirectories).Where(p => p.Extension != ".zip" && p.IsReadOnly == false).ToArray();
@@ -95,6 +96,7 @@ namespace ZipArchivator
                 if (!directory.Exists)
                 {
                     Console.WriteLine("Directory was not found, please enter the correct address!");
+                    break;
                 }
 
                 FileInfo[] files = directory.GetFiles("*.zip", SearchOption.AllDirectories);
