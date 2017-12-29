@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace MobileProvider
 {
-    class Provider : IMobileProvider
+    public class Provider : IMobileProvider
     {
         public event Action<LoggerStatusTypes, int, int> DeliveringSmsAction;
         public event Action<LoggerStatusTypes, int, int> DeliveringCallAction;
@@ -49,6 +49,10 @@ namespace MobileProvider
                     if (adminAccount != null) adminAccount.SendSmsToAll += ProvideAdminNotifications;
                 }
 
+            }
+            else
+            {
+                account.Number = (int) Accounts.FirstOrDefault(p => p.Email == account.Email)?.Number;
             }
         }
 

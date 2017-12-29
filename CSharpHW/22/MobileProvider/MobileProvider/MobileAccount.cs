@@ -38,13 +38,22 @@ namespace MobileProvider
 
         public void AddAddress(int number, string name)
         {
-            if (!_addresses.Any(p => p.Number == number && p.Name == name))
+            if (!_addresses.Any(p => p.Number == number))
             {
                 _addresses.Add(new MobileAddress()
                 {
                     Name = name,
                     Number = number
                 });
+            }
+            else
+            {
+                var foundedAddress = _addresses.FirstOrDefault(p => p.Number == number);
+
+                if (foundedAddress != null)
+                {
+                    foundedAddress.Name = name;
+                }
             }
         }
 

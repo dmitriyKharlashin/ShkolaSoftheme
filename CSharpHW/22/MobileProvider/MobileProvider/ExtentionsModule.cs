@@ -49,7 +49,7 @@ namespace MobileProvider
 
         public static IMobileAccount FromDataObject(this MobileAccountDO mobileAccountDO)
         {
-            return new MobileAccount(mobileAccountDO.Name, mobileAccountDO.Surname, mobileAccountDO.Email, mobileAccountDO.BirthYear)
+            return new MobileAccount((string)mobileAccountDO.Name, (string)mobileAccountDO.Surname, (string)mobileAccountDO.Email, (int)mobileAccountDO.BirthYear)
             {
                 Number = mobileAccountDO.Number
             };
