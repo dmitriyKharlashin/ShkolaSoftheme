@@ -4,16 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace TextReplacer
 {
     class Program
     {
-        static DirectoryInfo directory;
-        static FileInfo[] files;
-        static string searchedText;
-        static string replacer;
-        static Task[] tasks;
+        static DirectoryInfo _directory;
+        static FileInfo[] _files;
+        static string _searchedText;
+        static string _replacer;
+        static Task[] _tasks;
+        static Logger _logger = LogManager.GetCurrentClassLogger();
 
         static void Main(string[] args)
         {
@@ -23,24 +25,32 @@ namespace TextReplacer
             while (true)
             {
                 string destinationAddress = $@"{Console.ReadLine()}";
-                directory = new DirectoryInfo(destinationAddress);
 
-                if (destinationAddress.Equals(String.Empty) || !directory.Exists)
+                if (String.IsNullOrEmpty(destinationAddress))
                 {
-                    Console.WriteLine("Please, re-enter the correct folder address");
-                    continue;
+                    _directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+                }
+                else
+                {
+                    _directory = new DirectoryInfo(destinationAddress);
+
+                    if (!_directory.Exists)
+                    {
+                        Console.WriteLine("Please, re-enter the correct folder address");
+                        continue;
+                    }
                 }
 
-                files = directory.GetFiles("*.txt");
+                _files = _directory.GetFiles("*.txt");
                 break;
             }
 
             Console.WriteLine("Enter the needle text:");
             while (true)
             {
-                searchedText = $"{Console.ReadLine()}";
+                _searchedText = $"{Console.ReadLine()}";
 
-                if (searchedText.Equals(String.Empty))
+                if (_searchedText.Equals(String.Empty))
                 {
                     Console.WriteLine("Please, re-enter the correct text:");
                     continue;
@@ -52,9 +62,9 @@ namespace TextReplacer
             Console.WriteLine("Enter the new text value:");
             while (true)
             {
-                replacer = $"{Console.ReadLine()}";
+                _replacer = $"{Console.ReadLine()}";
 
-                if (replacer.Equals(String.Empty))
+                if (_replacer.Equals(String.Empty))
                 {
                     Console.WriteLine("Please, re-enter the correct text:");
                     continue;
@@ -63,22 +73,31 @@ namespace TextReplacer
                 break;
             }
 
-            tasks = new Task[files.Length];
-            for (var i = 0; i < files.Length; i++)
+            /*
+            _tasks = new Task[_files.Length];
+            for (var i = 0; i < _files.Length; i++)
             {
-                FileInfo file = files[i];
+                FileInfo file = _files[i];
 
                 Task task = new Task(() =>
                 {
-                    ReadAndChangeText(file, searchedText, replacer);
+                    ReadAndChangeText(file, _searchedText, _replacer);
                 });
 
                 task.Start();
 
-                tasks.SetValue(task, i);
+                _tasks.SetValue(task, i);
             }
 
-            Task.WaitAll(tasks);
+            Task.WhenAll(_tasks);
+            */
+
+            Parallel.ForEach(_files,
+                new ParallelOptions(){ MaxDegreeOfParallelism = Environment.ProcessorCount * 2 },
+                f =>
+                {
+                    ReadAndChangeText(f, _searchedText, _replacer);
+                });
         }
 
         static void ReadAndChangeText(FileInfo file, string searchedText, string replacer)
@@ -94,8 +113,8 @@ namespace TextReplacer
                     if (line != null && line.Contains(searchedText))
                     {
                         newLine += line.Replace(searchedText, replacer) + "\n";
-
-                        Console.WriteLine($"On line {lineNumber} the searched text {searchedText} was found and changed into {replacer}");
+                        
+                        _logger.Info($"On line {lineNumber} in file {file.Name} - the searched text {searchedText} was found and changed into {replacer}");
                         continue;
                     }
 
